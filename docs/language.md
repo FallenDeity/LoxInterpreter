@@ -253,5 +253,5 @@ For now standard libraries in `Lox` will be limited to the default `clock()` met
 
 - [Crafting Interpreters](https://www.craftinginterpreters.com/the-lox-language.html)
 
-<a style="float: left;" href="/">Back</a>
-<a style="float: right;" href="../docs/scanning.html">Next</a>
+[Back](../){: .btn .btn-blue}
+[NEXT](../docs/scanner.html){: .btn .btn-blue}
