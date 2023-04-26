@@ -1,6 +1,6 @@
 import pathlib
 
-from src.exceptions import PyLoxKeyboardInterrupt
+from src.exceptions import PyLoxKeyboardInterrupt, PyLoxEception
 from src.lexer import Lexer
 from src.logger import Logger
 
@@ -15,17 +15,20 @@ class PyLox:
     def run_prompt(self) -> None:
         while True:
             try:
-                source = input("> ")
+                source = input(">>> ")
             except KeyboardInterrupt:
                 self.logger.debug("Exiting PyLox...")
                 raise PyLoxKeyboardInterrupt
             else:
                 self.logger.info("Running PyLox...")
-                self.lexer.source = source
-                tokens = self.lexer.scan_tokens()
-                for token in tokens:
-                    self.logger.flair(f"{token}")
-                self.logger.info("Finished running PyLox.")
+                self.lexer.source = f"{source}\n"
+                try:
+                    tokens = self.lexer.scan_tokens()
+                    for token in tokens:
+                        self.logger.flair(f"{token}")
+                    self.logger.info("Finished running PyLox.")
+                except PyLoxEception:
+                    continue
 
     def run(self) -> None:
         self.logger.info("Running PyLox...")

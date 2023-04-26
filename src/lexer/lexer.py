@@ -36,7 +36,7 @@ class Lexer:
     def _read_file(path: pathlib.Path) -> str:
         """Read the source file."""
         with open(path, "r") as file:
-            return file.read()
+            return f"{file.read()}\n"
 
     def _add_token(self, token_type: TokenType, literal: str | None = None) -> None:
         """Add a token to the list of tokens."""
@@ -106,6 +106,9 @@ class Lexer:
             else:
                 self._add_token(ComplexTokenType(char))
         elif char == "\n":
+            if self._curser.peek(offset=-2) != str(SimpleTokenType.SEMICOLON):
+                self._logger.error(self._curser.error_highlight("Missing ';' at end of line."))
+                raise PyLoxSyntaxError(self._curser.error_highlight("Missing ';' at end of line."))
             self._curser.line += 1
             self._curser.column = 1
         elif char == '"':

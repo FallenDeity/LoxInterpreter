@@ -1,3 +1,21 @@
+* [Language Design](#language-design)
+  * [First Look](#first-look)
+  * [Data Types](#data-types)
+  * [Expressions](#expressions)
+  * [Statements](#statements)
+  * [Variables](#variables)
+  * [Control Flow](#control-flow)
+  * [Functions](#functions)
+  * [Classes](#classes)
+    * [Class-based](#class-based)
+    * [Prototype-based](#prototype-based)
+    * [`Lox` Approach](#lox-approach)
+    * [Inheritance in `Lox`](#inheritance-in-lox)
+  * [Standard Library](#standard-library)
+    * [TODO](#todo)
+  * [`PyLox` our Interpreter](#pylox-our-interpreter)
+  * [References](#references)
+
 # Language Design
 
 > 📝 **Note**  

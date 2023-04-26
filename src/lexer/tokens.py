@@ -76,6 +76,7 @@ class KeywordTokenType(TokenType):
     VAR = "var"
     WHILE = "while"
     BREAK = "break"
+    CONTINUE = "continue"
 
 
 class EOFTokenType(TokenType):

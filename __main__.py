@@ -1,3 +1,4 @@
 from src.interpreter import PyLox
 
-PyLox().run_prompt()
+if __name__ == "__main__":
+    PyLox().run_prompt()
