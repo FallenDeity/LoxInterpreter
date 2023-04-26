@@ -269,6 +269,6 @@ For now standard libraries in `Lox` will be limited to the default `clock()` met
             color: #fff;
         }
     </style>
-    <a class="btn-blue" href="./" style="float: left;">Previous: Home</a>
+    <a class="btn-blue" href="../LoxInterpreter" style="float: left;">Previous: Home</a>
     <a class="btn-blue" href="./docs/scanner.html" style="float: right;">Next: Scanner</a>
 </html>
