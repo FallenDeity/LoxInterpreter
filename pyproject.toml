@@ -39,7 +39,7 @@ ensure_newline_before_comments = true
 src_paths = ["src"]
 
 [tool.pyright]
-pythonVersion = "3.10"
+pythonVersion = "3.11"
 include = ["src"]
 typeCheckingMode = "strict"
 reportImportCycles = false
