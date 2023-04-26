@@ -138,4 +138,5 @@ class Lexer:
         """Set the source file."""
         self._source = source
         self._curser = Cursor(source=self._source)
+        self._tokens = []
         self._file_path = ""
