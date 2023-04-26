@@ -201,3 +201,5 @@ A JIT compiler is a compiler that generates target code at runtime. This is less
 
 - [Crafting Interpreters](https://craftinginterpreters.com/)
 - [WikiBooks](https://en.wikibooks.org/wiki/Compiler_Construction)
+
+<button class="button" onclick="window.location.href = './docs/language.md';">Next</button>
