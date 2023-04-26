@@ -26,10 +26,10 @@ Currently there are going to be two modes for running lox scripts
 - Directly from a file where interpreter recieves the file path as an argument
 - Directly from the command line where interpreter runs in a REPL mode
 
-> 📝 **Note**
+> 📝 **Note**  
 > REPL stands for Read-Eval-Print-Loop. It is a simple interactive computer programming environment that takes single user inputs, executes them, and returns the result to the user; a program written in a REPL environment is executed piecewise.
 
-> ⚠️ **Warning**
+> ⚠️ **Warning**  
 > For exiting the code or quitting on errors such as `SyntaxError` or `ValueError` we will take advantage of python's exception mechanism by raising custom exceptions.
 
 ```python

@@ -123,7 +123,7 @@ int foo() {
 }
 ```
 
-> 🗒 **Fun Fact**
+> 🗒 **Fun Fact**  
 > There are many more optimizations that can be performed on IR. You can read more about them [here](https://en.wikipedia.org/wiki/Compiler_optimization).
 
 ### Part VI: Code Generation
