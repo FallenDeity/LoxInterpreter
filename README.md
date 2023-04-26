@@ -202,5 +202,19 @@ A JIT compiler is a compiler that generates target code at runtime. This is less
 - [Crafting Interpreters](https://craftinginterpreters.com/)
 - [WikiBooks](https://en.wikibooks.org/wiki/Compiler_Construction)
 
-[Next](./docs/language.html){: .btn .btn-blue .mr-2 }
+<html lang="en">
+    <style>
+        .btn-blue {
+            background-color: #3498db;
+            border-color: #3498db;
+            color: #fff;
+        }
+        .btn-blue:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+            color: #fff;
+        }
+    </style>
+    <a class="btn-blue" href="../docs/language.html" style="float: right;">Previous: Lox Language</a>
+</html>
 

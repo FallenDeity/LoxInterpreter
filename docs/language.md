@@ -253,5 +253,19 @@ For now standard libraries in `Lox` will be limited to the default `clock()` met
 
 - [Crafting Interpreters](https://www.craftinginterpreters.com/the-lox-language.html)
 
-[Back](../){: .btn .btn-blue}
-[NEXT](../docs/scanner.html){: .btn .btn-blue}
+<html lang="en">
+    <style>
+        .btn-blue {
+            background-color: #3498db;
+            border-color: #3498db;
+            color: #fff;
+        }
+        .btn-blue:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+            color: #fff;
+        }
+    </style>
+    <a class="btn-blue" href="../LoxInterpreter" style="float: left;">Previous: Home</a>
+    <a class="btn-blue" href="../docs/scanner.html" style="float: right;">Next: Scanner</a>
+</html>
