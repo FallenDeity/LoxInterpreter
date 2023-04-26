@@ -208,6 +208,9 @@ A JIT compiler is a compiler that generates target code at runtime. This is less
             background-color: #3498db;
             border-color: #3498db;
             color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
         }
         .btn-blue:hover {
             background-color: #2980b9;
@@ -215,6 +218,6 @@ A JIT compiler is a compiler that generates target code at runtime. This is less
             color: #fff;
         }
     </style>
-    <a class="btn-blue" href="../docs/language.html" style="float: right;">Previous: Lox Language</a>
+    <a class="btn-blue" href="./docs/language.html" style="float: right;">Next: Lox Language</a>
 </html>
 
