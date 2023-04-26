@@ -220,4 +220,3 @@ A JIT compiler is a compiler that generates target code at runtime. This is less
     </style>
     <a class="btn-blue" href="./docs/language.html" style="float: right;">Next: Lox Language</a>
 </html>
-
