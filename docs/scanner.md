@@ -571,6 +571,6 @@ As you can see we have successfully implemented the `Lexer` class and it is work
             color: #fff;
         }
     </style>
-    <a class="btn-blue" href="./docs/language.html" style="float: left;">Previous: Language</a>
-    <a class="btn-blue" href="./docs/parser.html" style="float: right;">Next: Parser</a>
+    <a class="btn-blue" href="language.html" style="float: left;">Previous: Language</a>
+    <a class="btn-blue" href="parser.html" style="float: right;">Next: Parser</a>
 </html>

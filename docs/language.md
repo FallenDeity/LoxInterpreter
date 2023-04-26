@@ -257,11 +257,11 @@ For now standard libraries in `Lox` will be limited to the default `clock()` met
 
 ### TODO
 
-- [ ] Add `IO` methods
-- [ ] Add `Math` methods
-- [ ] Add `String` methods
-- [ ] Add `Network` methods
-- [ ] Add `File` methods
+- [ ]  Add `IO` methods
+- [ ]  Add `Math` methods
+- [ ]  Add `String` methods
+- [ ]  Add `Network` methods
+- [ ]  Add `File` methods
 
 ## `PyLox` our Interpreter
 
@@ -288,5 +288,5 @@ For now standard libraries in `Lox` will be limited to the default `clock()` met
         }
     </style>
     <a class="btn-blue" href="../index.html" style="float: left;">Previous: Home</a>
-    <a class="btn-blue" href="./docs/scanner.html" style="float: right;">Next: Scanner</a>
+    <a class="btn-blue" href="scanner.html" style="float: right;">Next: Scanner</a>
 </html>
