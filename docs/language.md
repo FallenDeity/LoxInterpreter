@@ -253,5 +253,5 @@ For now standard libraries in `Lox` will be limited to the default `clock()` met
 
 - [Crafting Interpreters](https://www.craftinginterpreters.com/the-lox-language.html)
 
-<button class="button" style="float: left;" onclick="window.location.href = '../';">Back</button>
-<button class="button" style="float: right;" onclick="window.location.href = 'scanning.md';">Next</button>
+<a style="float: left;" href="/">Back</a>
+<a style="float: right;" href="../docs/scanning.html">Next</a>
