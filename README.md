@@ -1,3 +1,24 @@
+* [Design of Programming Languages and Interpreters](#design-of-programming-languages-and-interpreters)
+  * [Introduction](#introduction)
+    * [What is a programming language?](#what-is-a-programming-language)
+    * [Tasks of a compiler and interpreters](#tasks-of-a-compiler-and-interpreters)
+  * [Map of our journey](#map-of-our-journey)
+    * [Part I: Lexical Scanning](#part-i-lexical-scanning)
+    * [Part II: Parsing](#part-ii-parsing)
+    * [Part III: Semantic Analysis](#part-iii-semantic-analysis)
+    * [Part IV: Intermediate Representation](#part-iv-intermediate-representation)
+    * [Part V: Optimization](#part-v-optimization)
+    * [Part VI: Code Generation](#part-vi-code-generation)
+    * [Part VII: Virtual Machine](#part-vii-virtual-machine)
+    * [Part VIII: Runtime](#part-viii-runtime)
+  * [Reaching the end of our journey](#reaching-the-end-of-our-journey)
+    * [Single-pass compilers](#single-pass-compilers)
+    * [Tree-walk interpreters](#tree-walk-interpreters)
+    * [Transpilers](#transpilers)
+    * [JIT compilers](#jit-compilers)
+  * [Compiler vs Interpreter](#compiler-vs-interpreter)
+  * [References](#references)
+
 # Design of Programming Languages and Interpreters
 
 ## Introduction
@@ -166,13 +187,13 @@ A JIT compiler is a compiler that generates target code at runtime. This is less
 
 ## Compiler vs Interpreter
 
-| Compiler | Interpreter |
-| :---: | :---: |
+|                          Compiler                           |                      Interpreter                      |
+|:-----------------------------------------------------------:|:-----------------------------------------------------:|
 | Converts the entire source code to usually lower level code | Converts the source code line by line to machine code |
-| Faster than interpreter | Slower than compiler |
-| Takes more memory | Takes less memory |
-| Generates intermediate object code | No intermediate object code is generated |
-| Examples: C, C++, Java, etc. | Examples: Python, Ruby, etc. |
+|                   Faster than interpreter                   |                 Slower than compiler                  |
+|                      Takes more memory                      |                   Takes less memory                   |
+|             Generates intermediate object code              |       No intermediate object code is generated        |
+|                Examples: C, C++, Java, etc.                 |             Examples: Python, Ruby, etc.              |
 
 ![Compiler vs Interpreter](https://craftinginterpreters.com/image/a-map-of-the-territory/venn.png)
 

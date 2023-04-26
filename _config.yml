@@ -1,0 +1,7 @@
+remote_theme: pages-themes/midnight@v0.2.0
+title: Designing a Language
+description: Building a language and an interpreter for it from scratch
+github_username: FallenDeity
+plugins:
+  - jekyll-feed
+  - jekyll-remote-theme
