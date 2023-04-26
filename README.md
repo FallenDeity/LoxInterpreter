@@ -143,7 +143,7 @@ If your compiler produces bytecode your work still isn't finished. No chip speak
   - This step is still simple as we are using the bytecode as an IR and we get to reuse the rest of the compiler pipeline we have already written.
 - Write a Virtual Machine.
   - We can write a program which emulates an idealized chip supporting our virtual architecture at runtime. The virtual machine is responsible for executing the bytecode. Advantage of this approach is simplicity and portability. Say we implement a VM in C now we can run our language on any machine that has a C compiler.
-  
+
 ### Part VIII: Runtime
 
 We finally have the user's program converted into a form the computer can understand now it's time to run it. If we converted the program to machine code we can run it directly on the CPU. If we converted the program to bytecode we can run it on the virtual machine.  
@@ -179,7 +179,7 @@ Attempting write a complete back end for a language can be tedious. But what if 
 
 After spread and rise of UNIX machines it began a trend of writing compilers for high level languages that targeted C as the intermediate representation. This is called transpiling. The most famous example of this is the CPython interpreter. CPython is a Python interpreter written in C. It converts Python code to C code and then compiles it using the C compiler.  
 
-The main phase of difference from traditional compilers are in the [code generation phase](#part-vi-code-generation). Instead of generating machine code, transpilers generate code in another high-level language. This code is then compiled by another compiler. 
+The main phase of difference from traditional compilers are in the [code generation phase](#part-vi-code-generation). Instead of generating machine code, transpilers generate code in another high-level language. This code is then compiled by another compiler.
 
 ### JIT compilers
 

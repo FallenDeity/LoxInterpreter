@@ -19,3 +19,32 @@ pyright = "^1.1.304"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+
+[tool.black]
+line-length = 120
+target-version = ["py310"]
+
+[tool.isort]
+profile = "black"
+line_length = 120
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+src_paths = ["src"]
+
+[tool.pyright]
+pythonVersion = "3.10"
+include = ["src"]
+typeCheckingMode = "strict"
+reportImportCycles = false
+reportPrivateUsage = false
+reportPrivateImportUsage = false
+reportMissingModuleSource = false
+reportMissingTypeStubs = false
+reportUnknownMemberType = false
