@@ -24,6 +24,10 @@ class Cursor:
         self.column += 1
         return self.source[self.current - 1]
 
+    def bump_line(self) -> None:
+        self.line += 1
+        self.column = 1
+
     def match(self, expected: str) -> bool:
         """
         Match the current character with the expected character.
@@ -56,7 +60,7 @@ class Cursor:
         """
         error = f"Error on line {self.line} at column {self.column}:\n"
         c_line = self.source.splitlines()[self.line - 1]
-        return f"{error}\n{c_line}\n{'~' * (self.column - 2)}^\n{message}"
+        return f"{error}\n{c_line}\n{'~' * (self.column - 1)}^\n{message}"
 
     @property
     def at_end(self) -> bool:

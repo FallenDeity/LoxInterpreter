@@ -1,4 +1,5 @@
 import enum
+import typing as t
 
 __all__: tuple[str, ...] = (
     "PyLoxErrorTypes",
@@ -10,6 +11,11 @@ __all__: tuple[str, ...] = (
     "PyLoxValueError",
     "PyLoxIndexError",
     "PyLoxKeyboardInterrupt",
+    "PyLoxParseError",
+    "PyLoxReturnError",
+    "PyLoxBreakError",
+    "PyLoxContinueError",
+    "PyLoxResolutionError",
 )
 
 
@@ -44,6 +50,13 @@ class PyLoxEception(Exception):
         return f"{self.error_type.name}: {self.message}"
 
 
+class PyLoxParseError(PyLoxEception):
+    """Exception raised for errors in the parse."""
+
+    def __init__(self, message: str, error_type: PyLoxErrorTypes = PyLoxErrorTypes.EX_USAGE) -> None:
+        super().__init__(message, error_type)
+
+
 class PyLoxKeyboardInterrupt(PyLoxEception):
     """Exception raised for errors in the keyboard."""
 
@@ -51,7 +64,7 @@ class PyLoxKeyboardInterrupt(PyLoxEception):
         super().__init__("Keyboard Interrupt", error_type)
 
 
-class PyLoxRuntimeError(PyLoxEception):
+class PyLoxRuntimeError(PyLoxEception, RuntimeError):
     """Exception raised for errors in the runtime."""
 
     def __init__(self, message: str, error_type: PyLoxErrorTypes = PyLoxErrorTypes.EX_USAGE) -> None:
@@ -90,4 +103,27 @@ class PyLoxIndexError(PyLoxEception):
     """Exception raised for errors in the index."""
 
     def __init__(self, message: str, error_type: PyLoxErrorTypes = PyLoxErrorTypes.EX_DATAERR) -> None:
+        super().__init__(message, error_type)
+
+
+class PyLoxReturnError(PyLoxRuntimeError):
+    def __init__(self, message: str, value: t.Any, error_type: PyLoxErrorTypes = PyLoxErrorTypes.EX_SOFTWARE) -> None:
+        self.value = value
+        super().__init__(message, error_type)
+
+
+class PyLoxBreakError(PyLoxRuntimeError):
+    def __init__(self, message: str, error_type: PyLoxErrorTypes = PyLoxErrorTypes.EX_SOFTWARE) -> None:
+        super().__init__(message, error_type)
+
+
+class PyLoxContinueError(PyLoxRuntimeError):
+    def __init__(self, message: str, error_type: PyLoxErrorTypes = PyLoxErrorTypes.EX_SOFTWARE) -> None:
+        super().__init__(message, error_type)
+
+
+class PyLoxResolutionError(PyLoxEception):
+    """Exception raised for errors in the resolution."""
+
+    def __init__(self, message: str, error_type: PyLoxErrorTypes = PyLoxErrorTypes.EX_SOFTWARE) -> None:
         super().__init__(message, error_type)

@@ -3,7 +3,7 @@ import enum
 import typing as t
 
 if t.TYPE_CHECKING:
-    from src.models import Cursor
+    from src.utils.cursor import Cursor
 
 
 __all__: tuple[str, ...] = (
@@ -40,6 +40,8 @@ class SimpleTokenType(TokenType):
     SLASH = "/"
     STAR = "*"
     BANG = "!"
+    CARAT = "^"
+    MODULO = "%"
 
 
 class ComplexTokenType(TokenType):
@@ -50,9 +52,12 @@ class ComplexTokenType(TokenType):
     GREATER_EQUAL = ">="
     LESS = "<"
     LESS_EQUAL = "<="
+    BACKSLASH = "\\"
 
 
 class LiteralTokenType(TokenType):
+    SINGLE_QUOTE = "'"
+    DOUBLE_QUOTE = '"'
     IDENTIFIER = enum.auto()
     STRING = enum.auto()
     NUMBER = enum.auto()
@@ -89,7 +94,7 @@ class MiscTokenType(TokenType):
     LF = "\r"
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass(frozen=True)
 class Token:
     token_type: TokenType
     lexeme: str

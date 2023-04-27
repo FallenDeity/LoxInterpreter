@@ -2,7 +2,7 @@ import pathlib
 import typing as t
 
 from src.exceptions import PyLoxSyntaxError, PyLoxValueError
-from src.models import Cursor
+from src.utils.cursor import Cursor
 
 from .tokens import (
     ComplexTokenType,
@@ -29,45 +29,44 @@ class Lexer:
         self._file_path = pathlib.Path(source) if source else ""
         self._source = self._read_file(self._file_path) if self._file_path else ""
         self._tokens: list[Token] = []
-        self._curser = Cursor(source=self._source)
+        self._cursor = Cursor(source=self._source)
         self._logger = logger
 
     @staticmethod
     def _read_file(path: pathlib.Path) -> str:
         """Read the source file."""
         with open(path, "r") as file:
-            return f"{file.read()}\n"
+            return file.read()
 
-    def _add_token(self, token_type: TokenType, literal: str | None = None) -> None:
+    def _add_token(self, token_type: TokenType, literal: t.Any = None) -> None:
         """Add a token to the list of tokens."""
-        self._tokens.append(Token.from_raw(token_type, self._curser, literal))
+        self._tokens.append(Token.from_raw(token_type, self._cursor, literal))
 
-    def _read_string(self) -> None:
+    def _read_string(self, terminator: str = '"') -> None:
         """Read a string."""
-        while self._curser.peek() != '"' and not self._curser.at_end:
-            if self._curser.peek() == "\n":
-                self._curser.line += 1
-                self._curser.column = 1
-            self._curser.advance()
-        if self._curser.at_end:
-            self._logger.error(self._curser.error_highlight("Unterminated string."))
-            raise PyLoxValueError(self._curser.error_highlight("Unterminated string."))
-        self._curser.advance()
-        value = self._curser.source[self._curser.start + 1 : self._curser.current - 1]
+        while self._cursor.peek() != terminator and not self._cursor.at_end:
+            if self._cursor.peek() == "\n":
+                self._cursor.bump_line()
+            self._cursor.advance()
+        if self._cursor.at_end:
+            self._logger.error(self._cursor.error_highlight("Unterminated string."))
+            raise PyLoxValueError(self._cursor.error_highlight("Unterminated string."))
+        self._cursor.advance()
+        value = self._cursor.source[self._cursor.start + 1 : self._cursor.current - 1]
         self._add_token(LiteralTokenType.STRING, value)
 
     def _read_identifier(self) -> None:
         """Read an identifier."""
-        while self._curser.peek().isalnum() or self._curser.peek() == "_":
-            self._curser.advance()
-        value = self._curser.source[self._curser.start : self._curser.current]
+        while self._cursor.peek().isalnum() or self._cursor.peek() == "_":
+            self._cursor.advance()
+        value = self._cursor.source[self._cursor.start : self._cursor.current]
         _ids = [i.lexeme for i in self._tokens if i.token_type == LiteralTokenType.IDENTIFIER]
-        if self._curser.column - len(value) == 1 and value not in (
+        if self._cursor.column - len(value) == 1 and value not in (
             *KeywordTokenType.as_dict().values(),
             *_ids,
         ):
-            self._logger.error(self._curser.error_highlight(f"Invalid identifier '{value}'."))
-            raise PyLoxSyntaxError(self._curser.error_highlight(f"Invalid identifier '{value}'."))
+            self._logger.error(self._cursor.error_highlight(f"Invalid identifier '{value}'."))
+            raise PyLoxSyntaxError(self._cursor.error_highlight(f"Invalid identifier '{value}'."))
         elif value in KeywordTokenType.as_dict().values():
             self._add_token(KeywordTokenType(value))
         else:
@@ -75,59 +74,75 @@ class Lexer:
 
     def _read_number(self) -> None:
         """Read a number."""
-        while self._curser.peek().isdigit():
-            self._curser.advance()
-        if self._curser.peek() == "." and self._curser.peek(offset=1).isdigit():
-            self._curser.advance()
-            while self._curser.peek().isdigit():
-                self._curser.advance()
-        value = self._curser.source[self._curser.start : self._curser.current]
-        if self._curser.column - len(value) == 1 and self._curser.peek().isalpha() or self._curser.peek() == "_":
-            self._logger.error(self._curser.error_highlight(f"Invalid number '{value}'."))
-            raise PyLoxSyntaxError(self._curser.error_highlight(f"Invalid number '{value}'."))
-        self._add_token(LiteralTokenType.NUMBER, value)
+        while self._cursor.peek().isdigit():
+            self._cursor.advance()
+        is_float = False
+        if self._cursor.peek() == "." and self._cursor.peek(offset=1).isdigit():
+            is_float = True
+            self._cursor.advance()
+            while self._cursor.peek().isdigit():
+                self._cursor.advance()
+        value = self._cursor.source[self._cursor.start : self._cursor.current]
+        if self._cursor.column - len(value) == 1 and self._cursor.peek().isalpha() or self._cursor.peek() == "_":
+            self._logger.error(self._cursor.error_highlight(f"Invalid number '{value}'."))
+            raise PyLoxSyntaxError(self._cursor.error_highlight(f"Invalid number '{value}'."))
+        self._add_token(LiteralTokenType.NUMBER, float(value) if is_float else int(value))
+
+    def _read_comment(self) -> None:
+        """Read a comment."""
+        if self._cursor.match(str(SimpleTokenType.SLASH)):
+            while self._cursor.peek() != "\n" and not self._cursor.at_end:
+                self._cursor.advance()
+        elif self._cursor.match(str(SimpleTokenType.STAR)):
+            while not self._cursor.at_end and not (
+                self._cursor.match(str(SimpleTokenType.STAR)) and self._cursor.match(str(SimpleTokenType.SLASH))
+            ):
+                if self._cursor.peek() == "\n":
+                    self._cursor.bump_line()
+                self._cursor.advance()
+            if self._cursor.at_end:
+                self._logger.error(self._cursor.error_highlight("Unterminated comment."))
+                raise PyLoxSyntaxError(self._cursor.error_highlight("Unterminated comment."))
+        else:
+            self._add_token(SimpleTokenType.SLASH)
+
+    def _read_complex(self, char: str) -> None:
+        if self._cursor.match(str(ComplexTokenType.EQUAL)):
+            self._add_token(ComplexTokenType(f"{char}{str(ComplexTokenType.EQUAL)}"))
+        elif self._cursor.match(str(ComplexTokenType.BACKSLASH)) and char == str(ComplexTokenType.BACKSLASH):
+            self._add_token(ComplexTokenType(char))
+        else:
+            self._add_token(ComplexTokenType(char))
 
     def _scan_token(self) -> None:
         """Scan the source file for a token."""
-        char = self._curser.advance()
+        char = self._cursor.advance()
         if char in MiscTokenType.as_dict().values():
             return
         elif char == str(SimpleTokenType.SLASH):
-            if self._curser.match(str(SimpleTokenType.SLASH)):
-                while self._curser.peek() != "\n" and not self._curser.at_end:
-                    self._curser.advance()
-            else:
-                self._add_token(SimpleTokenType.SLASH)
+            self._read_comment()
         elif char in SimpleTokenType.as_dict().values():
             self._add_token(SimpleTokenType(char))
         elif char in ComplexTokenType.as_dict().values():
-            if self._curser.match("="):
-                self._add_token(ComplexTokenType(f"{char}="))
-            else:
-                self._add_token(ComplexTokenType(char))
+            self._read_complex(char)
         elif char == "\n":
-            if self._curser.peek(offset=-2) != str(SimpleTokenType.SEMICOLON):
-                self._logger.error(self._curser.error_highlight("Missing ';' at end of line."))
-                raise PyLoxSyntaxError(self._curser.error_highlight("Missing ';' at end of line."))
-            self._curser.line += 1
-            self._curser.column = 1
-        elif char == '"':
-            self._read_string()
+            self._cursor.bump_line()
+        elif char in (str(LiteralTokenType.SINGLE_QUOTE), str(LiteralTokenType.DOUBLE_QUOTE)):
+            self._read_string(LiteralTokenType(char))
         elif char.isalpha() or char == "_":
             self._read_identifier()
         elif char.isdigit():
             self._read_number()
         else:
-            self._logger.error(self._curser.error_highlight(f"Unexpected character '{char}'."))
-            raise PyLoxSyntaxError(self._curser.error_highlight(f"Unexpected character '{char}'."))
+            self._logger.error(self._cursor.error_highlight(f"Unexpected character '{char}'."))
+            raise PyLoxSyntaxError(self._cursor.error_highlight(f"Unexpected character '{char}'."))
 
     def scan_tokens(self) -> list[Token]:
         """Scan the source file for tokens."""
-        while not self._curser.at_end:
-            self._curser.start = self._curser.current
+        while not self._cursor.at_end:
+            self._cursor.start = self._cursor.current
             self._scan_token()
-        eof_ = Token.from_raw(EOFTokenType.EOF, self._curser)
-        eof_.lexeme = ""
+        eof_ = Token.from_raw(EOFTokenType.EOF, self._cursor)
         self._tokens.append(eof_)
         return self._tokens
 
@@ -140,6 +155,6 @@ class Lexer:
     def source(self, source: str) -> None:
         """Set the source file."""
         self._source = source
-        self._curser = Cursor(source=self._source)
+        self._cursor = Cursor(source=self._source)
         self._tokens = []
         self._file_path = ""
