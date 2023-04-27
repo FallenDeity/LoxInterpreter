@@ -45,6 +45,8 @@ if t.TYPE_CHECKING:
         While,
     )
 
+    from .lox import PyLox
+
 
 class Equals(t.Protocol):
     def __eq__(self, other: t.Any, /) -> bool:
@@ -54,15 +56,15 @@ class Equals(t.Protocol):
 class Interpreter(VisitorProtocol, StmtProtocol):
     _environment: Environment
 
-    def __init__(self, source: str, logger: "Logger") -> None:
+    def __init__(self, lox: "PyLox", logger: "Logger") -> None:
+        self._lox = lox
         self._logger = logger
         self._environment = Environment()
         self._locals: t.Dict["Expr", int] = {}
-        self._source = source
 
     def error(self, token: "Token", message: str, /) -> str:
         """Raise a runtime error."""
-        line = self._source.splitlines()[token.line - 1]
+        line = self._lox.lexer._source.splitlines()[token.line - 1]
         error_ = f"\n{line}\n{'~' * token.column}^\n{message}"
         return f"RuntimeError at line {token.line}:{token.column}{error_}"
 
