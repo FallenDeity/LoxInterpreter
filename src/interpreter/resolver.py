@@ -30,6 +30,8 @@ if t.TYPE_CHECKING:
         Stmt,
         Super,
         This,
+        Throw,
+        Try,
         Unary,
         Var,
         Variable,
@@ -198,6 +200,10 @@ class Resolver(StmtProtocol, VisitorProtocol):
         self._resolve_one(stmt.expression)
         return None
 
+    def visit_throw_stmt(self, stmt: "Throw") -> t.Any:
+        self._resolve_one(stmt.value)
+        return None
+
     def visit_return_stmt(self, stmt: "Return") -> t.Any:
         if self.current_function == FunctionType.NONE:
             raise PyLoxResolutionError(self._interpreter.error(stmt.keyword, "Cannot return from top-level code."))
@@ -215,6 +221,14 @@ class Resolver(StmtProtocol, VisitorProtocol):
         self._resolve_one(stmt.condition)
         self._resolve_one(stmt.body)
         self.current_loop = enclosing_loop
+        return None
+
+    def visit_try_stmt(self, stmt: "Try") -> t.Any:
+        self._resolve_one(stmt.try_block)
+        if stmt.catch_block is not None:
+            self._resolve_one(stmt.catch_block)
+        if stmt.finally_block is not None:
+            self._resolve_one(stmt.finally_block)
         return None
 
     def visit_break_stmt(self, stmt: "Break") -> t.Any:

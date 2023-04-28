@@ -84,6 +84,10 @@ class KeywordTokenType(TokenType):
     BREAK = "break"
     CONTINUE = "continue"
     LAMBDA = "lambda"
+    THROW = "throw"
+    TRY = "try"
+    CATCH = "catch"
+    FINALLY = "finally"
 
 
 class EOFTokenType(TokenType):

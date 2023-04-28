@@ -124,4 +124,3 @@ This is the base parser class that we will use to parse the tokens. The parser c
 - `_match()` - Check if the current token is of any of the given types.
 
 Now that we have defined the base parser class, we can start parsing the tokens.  
-

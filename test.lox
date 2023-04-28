@@ -1,11 +1,9 @@
-class A {
-    init() {
-        this.x = 1;
-    }
+print 2 ^ 3;
+try {
+    print 5 /;
+} catch (e) {
+    print "Caught exception:";
+    print e;
+} finally {
+    print "Finally";
 }
-
-var x = lambda a, b: a + b;
-print x(1, 2);
-fun foo() { return 1; }
-
-print foo();

@@ -37,6 +37,8 @@ if t.TYPE_CHECKING:
         Stmt,
         Super,
         This,
+        Throw,
+        Try,
         Unary,
         Var,
         Variable,
@@ -203,6 +205,19 @@ class Interpreter(VisitorProtocol, StmtProtocol):
         elif stmt.else_branch is not None:
             self._evaluate(stmt.else_branch)
 
+    def visit_try_stmt(self, stmt: "Try") -> t.Any:
+        """Visit a try statement."""
+        try:
+            self._evaluate(stmt.try_block)
+        except Exception as error:
+            if stmt.catch_block is not None and stmt.error is not None:
+                self._environment.define(stmt.error, LoxString(str(error)))
+                self._evaluate(stmt.catch_block)
+        finally:
+            if stmt.finally_block is not None:
+                self._evaluate(stmt.finally_block)
+        return None
+
     def visit_print_stmt(self, stmt: "Print") -> None:
         """Visit a print statement."""
         value: t.Any = self._evaluate(stmt.expression)
@@ -315,8 +330,8 @@ class Interpreter(VisitorProtocol, StmtProtocol):
             case SimpleTokenType.PLUS:
                 if type(left) in (int, float) and type(right) in (int, float):
                     return left + right
-                if isinstance(left, str) and isinstance(right, str):
-                    return left + right
+                if isinstance(left, LoxString) and isinstance(right, LoxString):
+                    return LoxString(str(left) + str(right))
                 raise PyLoxRuntimeError(self.error(expr.operator, "Operands must be two numbers or two strings."))
             case SimpleTokenType.SLASH:
                 self._numeric_validation(expr.operator, left, right)
@@ -373,8 +388,10 @@ class Interpreter(VisitorProtocol, StmtProtocol):
         try:
             return callee(self, arguments)
         except Exception as e:
-            self._logger.error(f"Error while calling {callee}: {e}")
-            raise PyLoxRuntimeError(self.error(expr.paren, f"Error while calling {callee}."))
+            self._logger.error(f"Error while calling function {expr.paren.line}:{expr.paren.column}: \n{e}")
+            raise PyLoxRuntimeError(
+                self.error(expr.paren, f"Error while calling function {expr.paren.line}:{expr.paren.column}: \n{e}")
+            )
 
     def visit_get_expr(self, expr: "Get") -> t.Any:
         """Visit a get expression."""
@@ -392,3 +409,7 @@ class Interpreter(VisitorProtocol, StmtProtocol):
         if method is None:
             raise PyLoxRuntimeError(self.error(expr.method, f"Undefined property {expr.method.lexeme}."))
         return method.bind(obj)
+
+    def visit_throw_stmt(self, stmt: "Throw") -> t.Any:
+        """Visit a throw statement."""
+        raise PyLoxRuntimeError(self.error(stmt.keyword, self._evaluate(stmt.value)))

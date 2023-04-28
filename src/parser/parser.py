@@ -25,6 +25,8 @@ from src.utils.expr import (
     Stmt,
     Super,
     This,
+    Throw,
+    Try,
     Unary,
     Var,
     Variable,
@@ -117,6 +119,7 @@ class Parser:
                 KeywordTokenType.WHILE,
                 KeywordTokenType.PRINT,
                 KeywordTokenType.RETURN,
+                KeywordTokenType.THROW,
             ):
                 return
             self._advance()
@@ -218,9 +221,43 @@ class Parser:
             return self._break_statement()
         elif self._match(KeywordTokenType.CONTINUE):
             return self._continue_statement()
+        elif self._match(KeywordTokenType.THROW):
+            return self._throw_statement()
+        elif self._match(KeywordTokenType.TRY):
+            return self._try_statement()
         elif self._match(SimpleTokenType.LEFT_BRACE):
             return Block(self._block())
         return self._expression_statement()
+
+    def _try_statement(self) -> Stmt:
+        """
+        Parse a try statement.
+        :return: The parsed data
+        """
+        try_block = self._statement()
+        catch_block, variable, finally_block = None, None, None
+        if self._match(KeywordTokenType.CATCH):
+            self._consume(SimpleTokenType.LEFT_PAREN, "Expected '(' after 'catch'.")
+            variable = self._consume(LiteralTokenType.IDENTIFIER, "Expected catch variable name.")
+            self._consume(SimpleTokenType.RIGHT_PAREN, "Expected ')' after catch variable.")
+            catch_block = self._statement()
+        if self._match(KeywordTokenType.FINALLY):
+            finally_block = self._statement()
+        if catch_block is None and finally_block is None:
+            self._error(self._previous(), "Parse Error", "Expected 'catch' or 'finally' after 'try'.")
+        return Try(variable, try_block, catch_block, finally_block)
+
+    def _throw_statement(self) -> Stmt:
+        """
+        Parse a throw statement.
+        :return: The parsed data
+        """
+        keyword = self._previous()
+        value = Literal(None)
+        if not self._check(SimpleTokenType.SEMICOLON):
+            value = self._assignment()
+        self._consume(SimpleTokenType.SEMICOLON, "Expected ';' after value.")
+        return Throw(keyword, value)
 
     def _for_statement(self) -> Stmt:
         """

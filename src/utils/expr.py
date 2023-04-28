@@ -37,6 +37,8 @@ __all__: tuple[str, ...] = (
     "Break",
     "Continue",
     "Var",
+    "Throw",
+    "Try",
 )
 
 
@@ -335,6 +337,18 @@ class Return(Stmt):
 
 
 @dataclasses.dataclass(frozen=True)
+class Throw(Stmt):
+    """A throw statement."""
+
+    keyword: "Token"
+    value: Expr
+
+    def accept(self, visitor: StmtProtocol, /) -> t.Any:
+        """Accept a visitor."""
+        return visitor.visit_throw_stmt(self)
+
+
+@dataclasses.dataclass(frozen=True)
 class Var(Stmt):
     """A variable expression."""
 
@@ -356,3 +370,17 @@ class While(Stmt):
     def accept(self, visitor: StmtProtocol, /) -> t.Any:
         """Accept a visitor."""
         return visitor.visit_while_stmt(self)
+
+
+@dataclasses.dataclass(frozen=True)
+class Try(Stmt):
+    """A try statement."""
+
+    error: t.Optional["Token"]
+    try_block: Stmt
+    catch_block: t.Optional[Stmt]
+    finally_block: t.Optional[Stmt]
+
+    def accept(self, visitor: StmtProtocol, /) -> t.Any:
+        """Accept a visitor."""
+        return visitor.visit_try_stmt(self)

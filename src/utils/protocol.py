@@ -24,6 +24,8 @@ if t.TYPE_CHECKING:
         Set,
         Super,
         This,
+        Throw,
+        Try,
         Unary,
         Var,
         Variable,
@@ -135,4 +137,12 @@ class StmtProtocol(t.Protocol):
 
     @abstractmethod
     def visit_for_stmt(self, stmt: "For") -> t.Any:
+        ...
+
+    @abstractmethod
+    def visit_throw_stmt(self, stmt: "Throw") -> t.Any:
+        ...
+
+    @abstractmethod
+    def visit_try_stmt(self, stmt: "Try") -> t.Any:
         ...
