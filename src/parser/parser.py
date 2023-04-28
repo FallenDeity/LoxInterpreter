@@ -16,6 +16,7 @@ from src.utils.expr import (
     Get,
     Grouping,
     If,
+    Lambda,
     Literal,
     Logical,
     Print,
@@ -452,6 +453,23 @@ class Parser:
         paren = self._consume(SimpleTokenType.RIGHT_PAREN, "Expected ')' after arguments.")
         return Call(callee, paren, arguments)
 
+    def _lambda(self) -> Expr:
+        """
+        Parse a lambda expression.
+        :return: The parsed data
+        """
+        parameters: list[Token] = []
+        while True:
+            if len(parameters) >= 255:
+                self._error(self._peek(), "Cannot have more than 255 parameters.", "\n")
+            if not self._check(LiteralTokenType.IDENTIFIER):
+                break
+            parameters.append(self._advance())
+            if not self._match(SimpleTokenType.COMMA):
+                break
+        self._consume(SimpleTokenType.COLON, "Expected ':' after lambda parameters.")
+        return Lambda(parameters, [Return(self._previous(), self._assignment())])
+
     def _primary(self) -> Expr | None:
         """
         Parse a primary expression.
@@ -465,6 +483,8 @@ class Parser:
             return Literal(None)
         if self._match(LiteralTokenType.NUMBER, LiteralTokenType.STRING):
             return Literal(self._previous().literal)
+        if self._match(KeywordTokenType.LAMBDA):
+            return self._lambda()
         if self._match(KeywordTokenType.SUPER):
             keyword = self._previous()
             self._consume(SimpleTokenType.DOT, "Expected '.' after 'super'.")

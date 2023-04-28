@@ -16,6 +16,7 @@ if t.TYPE_CHECKING:
         Get,
         Grouping,
         If,
+        Lambda,
         Literal,
         Logical,
         Print,
@@ -80,6 +81,10 @@ class VisitorProtocol(t.Protocol):
 
     @abstractmethod
     def visit_super_expr(self, expr: "Super") -> t.Any:
+        ...
+
+    @abstractmethod
+    def visit_lambda_expr(self, expr: "Lambda") -> t.Any:
         ...
 
 

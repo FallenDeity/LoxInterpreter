@@ -1,4 +1,11 @@
-import <generics>
+class A {
+    init() {
+        this.x = 1;
+    }
+}
 
-var x = "T";
-print x.isupper();
+var x = lambda a, b: a + b;
+print x(1, 2);
+fun foo() { return 1; }
+
+print foo();

@@ -42,6 +42,7 @@ class SimpleTokenType(TokenType):
     BANG = "!"
     CARAT = "^"
     MODULO = "%"
+    COLON = ":"
 
 
 class ComplexTokenType(TokenType):
@@ -82,6 +83,7 @@ class KeywordTokenType(TokenType):
     WHILE = "while"
     BREAK = "break"
     CONTINUE = "continue"
+    LAMBDA = "lambda"
 
 
 class EOFTokenType(TokenType):

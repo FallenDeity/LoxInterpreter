@@ -21,6 +21,7 @@ if t.TYPE_CHECKING:
         Get,
         Grouping,
         If,
+        Lambda,
         Literal,
         Logical,
         Print,
@@ -90,7 +91,7 @@ class Resolver(StmtProtocol, VisitorProtocol):
                 self._interpreter._resolve(expr, i)
                 return
 
-    def _resolve_function(self, function: "Function", type_: FunctionType) -> None:
+    def _resolve_function(self, function: t.Union["Function", "Lambda"], type_: FunctionType) -> None:
         enclosing_function = self.current_function
         self.current_function = type_
 
@@ -176,6 +177,10 @@ class Resolver(StmtProtocol, VisitorProtocol):
         self._declare(stmt.name)
         self._define(stmt.name)
         self._resolve_function(stmt, FunctionType.FUNCTION)
+        return None
+
+    def visit_lambda_expr(self, expr: "Lambda") -> t.Any:
+        self._resolve_function(expr, FunctionType.FUNCTION)
         return None
 
     def visit_expression_stmt(self, stmt: "Expression") -> t.Any:

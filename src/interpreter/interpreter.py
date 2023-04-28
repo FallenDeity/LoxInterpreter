@@ -28,6 +28,7 @@ if t.TYPE_CHECKING:
         Get,
         Grouping,
         If,
+        Lambda,
         Literal,
         Logical,
         Print,
@@ -43,6 +44,10 @@ if t.TYPE_CHECKING:
     )
 
     from .lox import PyLox
+
+
+# pyright: reportUnknownArgumentType=false
+__all__: tuple[str, ...] = ("Interpreter",)
 
 
 class Equals(t.Protocol):
@@ -124,7 +129,7 @@ class Interpreter(VisitorProtocol, StmtProtocol):
         if isinstance(value, str):
             return LoxString(value)
         elif isinstance(value, list):
-            return LoxArray(value)  # pyright: reportUnknownArgumentType=false
+            return LoxArray(value)
         return value
 
     def _evaluate(self, expression: t.Union["Expr", "Stmt"]) -> t.Any:
@@ -186,6 +191,10 @@ class Interpreter(VisitorProtocol, StmtProtocol):
         """Visit a function statement."""
         function_: LoxFunction = LoxFunction(stmt, self._environment, False)
         self._environment.define(stmt.name, function_)
+
+    def visit_lambda_expr(self, expr: "Lambda") -> t.Any:
+        """Visit a lambda statement."""
+        return LoxFunction(expr, self._environment, False)
 
     def visit_if_stmt(self, stmt: "If") -> None:
         """Visit an if statement."""

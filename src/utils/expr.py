@@ -28,6 +28,7 @@ __all__: tuple[str, ...] = (
     "Function",
     "For",
     "If",
+    "Lambda",
     "Print",
     "Return",
     "While",
@@ -296,6 +297,18 @@ class If(Stmt):
     def accept(self, visitor: StmtProtocol, /) -> t.Any:
         """Accept a visitor."""
         return visitor.visit_if_stmt(self)
+
+
+@dataclasses.dataclass(frozen=True)
+class Lambda(Expr):
+    """A lambda expression."""
+
+    params: list["Token"]
+    body: list[Stmt]
+
+    def accept(self, visitor: VisitorProtocol, /) -> t.Any:
+        """Accept a visitor."""
+        return visitor.visit_lambda_expr(self)
 
 
 @dataclasses.dataclass(frozen=True)

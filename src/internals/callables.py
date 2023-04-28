@@ -8,7 +8,7 @@ from src.utils.environment import Environment
 
 if t.TYPE_CHECKING:
     from src.interpreter.interpreter import Interpreter
-    from src.utils.expr import Function
+    from src.utils.expr import Function, Lambda
 
 
 __all__: tuple[str, ...] = (
@@ -40,7 +40,7 @@ class LoxCallable(ABC):
 
 @dataclasses.dataclass
 class LoxFunction(LoxCallable):
-    declaration: "Function"
+    declaration: t.Union["Function", "Lambda"]
     closure: Environment
     is_initializer: bool = False
 
