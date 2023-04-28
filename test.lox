@@ -1,11 +1,6 @@
-class Foo {
-   init(a, b) {
-        print "init"; // expect: init
-        this.a = a;
-        this.b = b;
-      }
+var arr = array();
+arr.append(5);
+for (var i = 0; i < 10; i = i + 1) {
+    arr.append(i);
 }
-
-var foo = Foo(1, 2);
-print foo.a; // expect: 1
-print foo.b; // expect: 2
+print arr;

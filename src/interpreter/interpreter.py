@@ -1,5 +1,8 @@
+import inspect
+import pathlib
 import typing as t
 
+from src.builtins import BuiltInCallable
 from src.exceptions import (
     PyLoxBreakError,
     PyLoxContinueError,
@@ -9,17 +12,16 @@ from src.exceptions import (
     PyLoxTypeError,
 )
 from src.internals.callables import LoxCallable, LoxClass, LoxFunction, LoxInstance
-from src.lexer.tokens import ComplexTokenType, KeywordTokenType, SimpleTokenType
+from src.lexer.tokens import ComplexTokenType, KeywordTokenType, SimpleTokenType, Token
 from src.utils.environment import Environment
+from src.utils.expr import Block
 from src.utils.protocol import StmtProtocol, VisitorProtocol
 
 if t.TYPE_CHECKING:
-    from src.lexer.tokens import Token
     from src.logger import Logger
     from src.utils.expr import (
         Assign,
         Binary,
-        Block,
         Break,
         Call,
         Class,
@@ -55,12 +57,24 @@ class Equals(t.Protocol):
 
 class Interpreter(VisitorProtocol, StmtProtocol):
     _environment: Environment
+    builtins: pathlib.Path = pathlib.Path("src/builtins")
 
     def __init__(self, lox: "PyLox", logger: "Logger") -> None:
         self._lox = lox
         self._logger = logger
         self._environment = Environment()
         self._locals: t.Dict["Expr", int] = {}
+        self._load_builtins()
+
+    def _load_builtins(self) -> None:
+        """Load builtins."""
+        for file in self.builtins.glob("*.py"):
+            self._logger.debug(f"Loading builtin '{file.name}'...")
+            methods = inspect.getmembers(__import__(f"src.builtins.{file.stem}", fromlist=["*"]), inspect.isclass)
+            for _, method in methods:
+                if issubclass(method, BuiltInCallable) and method is not BuiltInCallable:
+                    token = Token(KeywordTokenType.FUN, method._short_name, None, 0, 0)
+                    self._environment.define(token, method(method._short_name))
 
     def error(self, token: "Token", message: str, /) -> str:
         """Raise a runtime error."""
@@ -200,9 +214,14 @@ class Interpreter(VisitorProtocol, StmtProtocol):
         """Visit a while statement."""
         try:
             while self.is_truthy(self._evaluate(stmt.condition)):
-                self._evaluate(stmt.body)
-        except Exception as e:
-            print(e)
+                try:
+                    self._evaluate(stmt.body)
+                except PyLoxContinueError:
+                    if isinstance(stmt.body, Block):
+                        self._execute_block([stmt.body.statements[-1]], Environment(self._environment))
+                        continue
+                    raise PyLoxRuntimeError("Continue must be inside a loop.")
+        except PyLoxRuntimeError:
             return
 
     def visit_break_stmt(self, stmt: "Break") -> t.Any:
@@ -282,7 +301,6 @@ class Interpreter(VisitorProtocol, StmtProtocol):
                 self._numeric_validation(expr.operator, left, right)
                 return left - right
             case SimpleTokenType.PLUS:
-                print(left, right)
                 if type(left) in (int, float) and type(right) in (int, float):
                     return left + right
                 if isinstance(left, str) and isinstance(right, str):

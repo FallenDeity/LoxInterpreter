@@ -16,6 +16,8 @@ __all__: tuple[str, ...] = (
     "PyLoxBreakError",
     "PyLoxContinueError",
     "PyLoxResolutionError",
+    "PyLoxAttributeError",
+    "PyLoxFileNotFoundError",
 )
 
 
@@ -126,4 +128,18 @@ class PyLoxResolutionError(PyLoxEception):
     """Exception raised for errors in the resolution."""
 
     def __init__(self, message: str, error_type: PyLoxErrorTypes = PyLoxErrorTypes.EX_SOFTWARE) -> None:
+        super().__init__(message, error_type)
+
+
+class PyLoxAttributeError(PyLoxEception):
+    """Exception raised for errors in the attribute."""
+
+    def __init__(self, message: str, error_type: PyLoxErrorTypes = PyLoxErrorTypes.EX_SOFTWARE) -> None:
+        super().__init__(message, error_type)
+
+
+class PyLoxFileNotFoundError(PyLoxEception):
+    """Exception raised for errors in the file."""
+
+    def __init__(self, message: str, error_type: PyLoxErrorTypes = PyLoxErrorTypes.EX_NOINPUT) -> None:
         super().__init__(message, error_type)
