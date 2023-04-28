@@ -1,0 +1,8 @@
+fun map (callable, arr) {
+    var length_ = len(arr);
+    var buffer = array();
+    for (var i = 0; i < length_; i = i + 1) {
+        buffer.append(callable(arr.index(i)));
+    }
+    return buffer;
+}

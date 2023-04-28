@@ -1,6 +1,4 @@
-var arr = array();
-arr.append(5);
-for (var i = 0; i < 10; i = i + 1) {
-    arr.append(i);
-}
-print arr;
+import <generics>
+
+var x = "T";
+print x.isupper();

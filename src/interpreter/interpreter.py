@@ -3,15 +3,10 @@ import pathlib
 import typing as t
 
 from src.builtins import BuiltInCallable
-from src.exceptions import (
-    PyLoxBreakError,
-    PyLoxContinueError,
-    PyLoxEception,
-    PyLoxReturnError,
-    PyLoxRuntimeError,
-    PyLoxTypeError,
-)
+from src.exceptions import PyLoxBreakError, PyLoxContinueError, PyLoxReturnError, PyLoxRuntimeError, PyLoxTypeError
+from src.internals.array import LoxArray
 from src.internals.callables import LoxCallable, LoxClass, LoxFunction, LoxInstance
+from src.internals.string import LoxString
 from src.lexer.tokens import ComplexTokenType, KeywordTokenType, SimpleTokenType, Token
 from src.utils.environment import Environment
 from src.utils.expr import Block
@@ -74,7 +69,7 @@ class Interpreter(VisitorProtocol, StmtProtocol):
             for _, method in methods:
                 if issubclass(method, BuiltInCallable) and method is not BuiltInCallable:
                     token = Token(KeywordTokenType.FUN, method._short_name, None, 0, 0)
-                    self._environment.define(token, method(method._short_name))
+                    self._environment.define(token, method(method._short_name))  # type: ignore
 
     def error(self, token: "Token", message: str, /) -> str:
         """Raise a runtime error."""
@@ -124,9 +119,17 @@ class Interpreter(VisitorProtocol, StmtProtocol):
         except PyLoxRuntimeError as error:
             self._logger.error(str(error))
 
+    @staticmethod
+    def _converter(value: t.Any) -> t.Any:
+        if isinstance(value, str):
+            return LoxString(value)
+        elif isinstance(value, list):
+            return LoxArray(value)  # pyright: reportUnknownArgumentType=false
+        return value
+
     def _evaluate(self, expression: t.Union["Expr", "Stmt"]) -> t.Any:
         """Evaluate an expression."""
-        return expression.accept(self)
+        return self._converter(expression.accept(self))
 
     def _resolve(self, expr: "Expr", depth: int) -> None:
         """Resolve an expression."""
@@ -194,7 +197,7 @@ class Interpreter(VisitorProtocol, StmtProtocol):
     def visit_print_stmt(self, stmt: "Print") -> None:
         """Visit a print statement."""
         value: t.Any = self._evaluate(stmt.expression)
-        self._logger.info(self.stringify(value))
+        print(self.stringify(value))
 
     def visit_return_stmt(self, stmt: "Return") -> None:
         """Visit a return statement."""
@@ -360,7 +363,8 @@ class Interpreter(VisitorProtocol, StmtProtocol):
             )
         try:
             return callee(self, arguments)
-        except PyLoxEception:
+        except Exception as e:
+            self._logger.error(f"Error while calling {callee}: {e}")
             raise PyLoxRuntimeError(self.error(expr.paren, f"Error while calling {callee}."))
 
     def visit_get_expr(self, expr: "Get") -> t.Any:

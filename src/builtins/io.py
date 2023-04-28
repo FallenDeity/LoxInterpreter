@@ -3,6 +3,7 @@ import typing as t
 
 from src.exceptions import PyLoxFileNotFoundError
 from src.internals.array import LoxArray
+from src.internals.string import LoxString
 
 from . import BuiltInCallable
 
@@ -18,8 +19,8 @@ class Input(BuiltInCallable):
     def arity(self) -> int:
         return 1
 
-    def __call__(self, interpreter: "Interpreter", arguments: list[str], /) -> str:
-        return input(arguments[0])
+    def __call__(self, interpreter: "Interpreter", arguments: list[LoxString], /) -> LoxString:
+        return LoxString(input(str(arguments[0])))
 
 
 @dataclasses.dataclass
@@ -30,10 +31,10 @@ class Read(BuiltInCallable):
     def arity(self) -> int:
         return 1
 
-    def __call__(self, interpreter: "Interpreter", arguments: list[str], /) -> str:
+    def __call__(self, interpreter: "Interpreter", arguments: list[LoxString], /) -> LoxString:
         try:
-            with open(arguments[0], "r") as f:
-                return f.read()
+            with open(str(arguments[0]), "r") as f:
+                return LoxString(f.read())
         except FileNotFoundError:
             raise PyLoxFileNotFoundError(f"File '{arguments[0]}' not found.")
 
@@ -46,9 +47,9 @@ class ReadLines(BuiltInCallable):
     def arity(self) -> int:
         return 1
 
-    def __call__(self, interpreter: "Interpreter", arguments: list[str], /) -> LoxArray:
+    def __call__(self, interpreter: "Interpreter", arguments: list[LoxString], /) -> LoxArray:
         try:
-            with open(arguments[0], "r") as f:
+            with open(str(arguments[0]), "r") as f:
                 return LoxArray(f.readlines())
         except FileNotFoundError:
             raise PyLoxFileNotFoundError(f"File '{arguments[0]}' not found.")
@@ -62,9 +63,9 @@ class Write(BuiltInCallable):
     def arity(self) -> int:
         return 2
 
-    def __call__(self, interpreter: "Interpreter", arguments: list[str], /) -> None:
+    def __call__(self, interpreter: "Interpreter", arguments: list[LoxString], /) -> None:
         try:
-            with open(arguments[0], "w") as f:
-                f.write(arguments[1])
+            with open(str(arguments[0]), "w") as f:
+                f.write(str(arguments[1]))
         except FileNotFoundError:
             raise PyLoxFileNotFoundError(f"File '{arguments[0]}' not found.")

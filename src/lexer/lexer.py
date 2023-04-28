@@ -1,4 +1,3 @@
-import pathlib
 import typing as t
 
 from src.exceptions import PyLoxSyntaxError, PyLoxValueError
@@ -23,20 +22,11 @@ __all__: tuple[str, ...] = ("Lexer",)
 
 
 class Lexer:
-    _file_path: pathlib.Path | str
-
-    def __init__(self, source: str | pathlib.Path, logger: "Logger") -> None:
-        self._file_path = pathlib.Path(source) if source else ""
-        self._source = self._read_file(self._file_path) if self._file_path else ""
+    def __init__(self, source: str, logger: "Logger") -> None:
+        self._source = source
         self._tokens: list[Token] = []
         self._cursor = Cursor(source=self._source)
         self._logger = logger
-
-    @staticmethod
-    def _read_file(path: pathlib.Path) -> str:
-        """Read the source file."""
-        with open(path, "r") as file:
-            return file.read()
 
     def _add_token(self, token_type: TokenType, literal: t.Any = None) -> None:
         """Add a token to the list of tokens."""
@@ -156,5 +146,3 @@ class Lexer:
         """Set the source file."""
         self._source = source
         self._cursor = Cursor(source=self._source)
-        self._tokens = []
-        self._file_path = ""

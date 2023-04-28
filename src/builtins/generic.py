@@ -4,6 +4,7 @@ import typing as t
 
 from src.exceptions import PyLoxTypeError
 from src.internals.array import LoxArray
+from src.internals.string import LoxString
 
 from . import BuiltInCallable
 
@@ -87,24 +88,9 @@ class Ord(BuiltInCallable):
 
     def __call__(self, interpreter: "Interpreter", arguments: list[str], /) -> int:
         try:
-            return ord(arguments[0])
+            return ord(str(arguments[0]))
         except TypeError:
             raise PyLoxTypeError("Argument must be a string.")
-
-
-@dataclasses.dataclass
-class Split(BuiltInCallable):
-    _short_name = "split"
-
-    @property
-    def arity(self) -> int:
-        return 2
-
-    def __call__(self, interpreter: "Interpreter", arguments: list[str], /) -> LoxArray:
-        try:
-            return LoxArray(arguments[0].split(arguments[1]))
-        except TypeError:
-            raise PyLoxTypeError("Argument must be a string or an array.")
 
 
 @dataclasses.dataclass
@@ -115,24 +101,9 @@ class Str(BuiltInCallable):
     def arity(self) -> int:
         return 1
 
-    def __call__(self, interpreter: "Interpreter", arguments: list[t.Any], /) -> str:
+    def __call__(self, interpreter: "Interpreter", arguments: list[t.Any], /) -> LoxString:
         try:
-            return str(arguments[0])
-        except TypeError:
-            raise PyLoxTypeError("Argument must be a string or an array.")
-
-
-@dataclasses.dataclass
-class List(BuiltInCallable):
-    _short_name = "list"
-
-    @property
-    def arity(self) -> int:
-        return 1
-
-    def __call__(self, interpreter: "Interpreter", arguments: list[t.Any], /) -> LoxArray:
-        try:
-            return LoxArray(list(arguments[0]))
+            return LoxString(arguments[0])
         except TypeError:
             raise PyLoxTypeError("Argument must be a string or an array.")
 

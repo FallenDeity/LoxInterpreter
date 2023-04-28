@@ -3,7 +3,7 @@ import typing as t
 
 __all__: tuple[str, ...] = (
     "PyLoxErrorTypes",
-    "PyLoxEception",
+    "PyLoxException",
     "PyLoxRuntimeError",
     "PyLoxSyntaxError",
     "PyLoxNameError",
@@ -40,7 +40,7 @@ class PyLoxErrorTypes(enum.IntEnum):
     EX_CONFIG = 78
 
 
-class PyLoxEception(Exception):
+class PyLoxException(Exception):
     """Base class for exceptions in this module."""
 
     def __init__(self, message: str, error_type: PyLoxErrorTypes = PyLoxErrorTypes.EX_SOFTWARE) -> None:
@@ -52,56 +52,56 @@ class PyLoxEception(Exception):
         return f"{self.error_type.name}: {self.message}"
 
 
-class PyLoxParseError(PyLoxEception):
+class PyLoxParseError(PyLoxException):
     """Exception raised for errors in the parse."""
 
     def __init__(self, message: str, error_type: PyLoxErrorTypes = PyLoxErrorTypes.EX_USAGE) -> None:
         super().__init__(message, error_type)
 
 
-class PyLoxKeyboardInterrupt(PyLoxEception):
+class PyLoxKeyboardInterrupt(PyLoxException):
     """Exception raised for errors in the keyboard."""
 
     def __init__(self, error_type: PyLoxErrorTypes = PyLoxErrorTypes.EX_SOFTWARE) -> None:
         super().__init__("Keyboard Interrupt", error_type)
 
 
-class PyLoxRuntimeError(PyLoxEception, RuntimeError):
+class PyLoxRuntimeError(PyLoxException, RuntimeError):
     """Exception raised for errors in the runtime."""
 
     def __init__(self, message: str, error_type: PyLoxErrorTypes = PyLoxErrorTypes.EX_USAGE) -> None:
         super().__init__(message, error_type)
 
 
-class PyLoxSyntaxError(PyLoxEception):
+class PyLoxSyntaxError(PyLoxException):
     """Exception raised for errors in the syntax."""
 
     def __init__(self, message: str, error_type: PyLoxErrorTypes = PyLoxErrorTypes.EX_USAGE) -> None:
         super().__init__(message, error_type)
 
 
-class PyLoxNameError(PyLoxEception):
+class PyLoxNameError(PyLoxException):
     """Exception raised for errors in the name."""
 
     def __init__(self, message: str, error_type: PyLoxErrorTypes = PyLoxErrorTypes.EX_USAGE) -> None:
         super().__init__(message, error_type)
 
 
-class PyLoxTypeError(PyLoxEception):
+class PyLoxTypeError(PyLoxException):
     """Exception raised for errors in the type."""
 
     def __init__(self, message: str, error_type: PyLoxErrorTypes = PyLoxErrorTypes.EX_USAGE) -> None:
         super().__init__(message, error_type)
 
 
-class PyLoxValueError(PyLoxEception):
+class PyLoxValueError(PyLoxException):
     """Exception raised for errors in the value."""
 
     def __init__(self, message: str, error_type: PyLoxErrorTypes = PyLoxErrorTypes.EX_DATAERR) -> None:
         super().__init__(message, error_type)
 
 
-class PyLoxIndexError(PyLoxEception):
+class PyLoxIndexError(PyLoxException):
     """Exception raised for errors in the index."""
 
     def __init__(self, message: str, error_type: PyLoxErrorTypes = PyLoxErrorTypes.EX_DATAERR) -> None:
@@ -124,21 +124,21 @@ class PyLoxContinueError(PyLoxRuntimeError):
         super().__init__(message, error_type)
 
 
-class PyLoxResolutionError(PyLoxEception):
+class PyLoxResolutionError(PyLoxException):
     """Exception raised for errors in the resolution."""
 
     def __init__(self, message: str, error_type: PyLoxErrorTypes = PyLoxErrorTypes.EX_SOFTWARE) -> None:
         super().__init__(message, error_type)
 
 
-class PyLoxAttributeError(PyLoxEception):
+class PyLoxAttributeError(PyLoxException):
     """Exception raised for errors in the attribute."""
 
     def __init__(self, message: str, error_type: PyLoxErrorTypes = PyLoxErrorTypes.EX_SOFTWARE) -> None:
         super().__init__(message, error_type)
 
 
-class PyLoxFileNotFoundError(PyLoxEception):
+class PyLoxFileNotFoundError(PyLoxException):
     """Exception raised for errors in the file."""
 
     def __init__(self, message: str, error_type: PyLoxErrorTypes = PyLoxErrorTypes.EX_NOINPUT) -> None:

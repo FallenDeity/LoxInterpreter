@@ -11,6 +11,9 @@ if t.TYPE_CHECKING:
     from src.lexer.tokens import Token
 
 
+__all__: tuple[str, ...] = ("LoxArray",)
+
+
 # pyright: reportIncompatibleVariableOverride=false
 
 
@@ -84,22 +87,6 @@ class Contains(ArrayCallable):
 
     def __call__(self, interpreter: "Interpreter", arguments: list[t.Any], /) -> bool:
         return arguments[0] in self.parent.fields
-
-
-@dataclasses.dataclass
-class IndexOf(ArrayCallable):
-    parent: "LoxArray"
-    token: "Token"
-
-    @property
-    def arity(self) -> int:
-        return 1
-
-    def __call__(self, interpreter: "Interpreter", arguments: list[t.Any], /) -> int:
-        try:
-            return self.parent.fields.index(arguments[0])
-        except ValueError:
-            raise PyLoxRuntimeError(interpreter.error(self.token, "Value not found."))
 
 
 @dataclasses.dataclass
@@ -198,7 +185,6 @@ class LoxArray(LoxContainer):
         "insert": Insert,
         "remove": Remove,
         "contains": Contains,
-        "index": IndexOf,
         "clear": Clear,
         "pop": Pop,
         "reverse": Reverse,
@@ -216,7 +202,7 @@ class LoxArray(LoxContainer):
 
     def get(self, name: "Token", /) -> t.Any:
         try:
-            super().get(name)
+            return super().get(name)
         except PyLoxAttributeError:
             pass
         try:
