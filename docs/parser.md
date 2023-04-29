@@ -633,9 +633,6 @@ For example `1` is a primary expression. It cannot be broken down further. It is
 
 Now that we have completed our parser we can test it out.
 
-```python
-```
-
 ```
 >>> var x = 7;
 [2023-04-30 00:18:48,991] | ~\src\interpreter\lox.py:39 | INFO | Running PyLox...

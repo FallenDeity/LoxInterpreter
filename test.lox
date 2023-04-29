@@ -1,5 +1,1 @@
-class Foo {
-}
-
-class Bar < Foo {
-}
+return 1;

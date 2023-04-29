@@ -257,11 +257,7 @@ For now standard libraries in `Lox` will be limited to the default `clock()` met
 
 ### TODO
 
-- [ ]  Add `IO` methods
-- [ ]  Add `Math` methods
-- [ ]  Add `String` methods
-- [ ]  Add `Network` methods
-- [ ]  Add `File` methods
+Look for the complete list of methods [here](tasks.html)
 
 ## `PyLox` our Interpreter
 

@@ -44,7 +44,6 @@ class PyLox:
                     tokens = self.lexer.scan_tokens()
                     parser = Parser(self, tokens, self.logger, self._source)
                     statements = parser.parse()
-                    print(statements)
                     if parser._has_error:
                         continue
                     resolver = Resolver(self.interpreter)

@@ -63,6 +63,25 @@ __all__: tuple[str, ...] = ("Resolver",)
 
 
 class Resolver(StmtProtocol, VisitorProtocol):
+    """Resolve names in the AST.
+
+    For example, the following code is valid:
+
+    ```
+    var a = "global";
+    {
+        fun showA() {
+            print a;
+        }
+        showA();  // prints "global"
+        var a = "block";
+        showA();  // prints "block"
+    }
+    print a;  // prints "global"
+    ```
+
+    Hence, resolver creates a new scope for each block, function, and class.
+    """
     def __init__(self, interpreter: "Interpreter") -> None:
         self._interpreter = interpreter
         self.scopes: list[dict[str, bool]] = []
