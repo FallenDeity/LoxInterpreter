@@ -9,7 +9,7 @@ if t.TYPE_CHECKING:
 
 @dataclasses.dataclass
 class BuiltInCallable(LoxCallable):
-    _short_name: str
+    _short_name: str = "built-in"
 
     def __str__(self) -> str:
         return f"<Built-in function '{self._short_name}'>"

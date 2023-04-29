@@ -44,7 +44,10 @@ class PreProcessor:
                 paths.add(path)
                 self._includes[path.as_posix()] = Import(path, n, match.start(), match.end(), module)
         for module in self._includes.values():
-            self._source = self._source.replace(f"import {module.module}", module.path.read_text())
+            text = module.path.read_text()
+            if module.module.startswith("<") and "init" not in text and f"class {module.module[1:-1]}" in text:
+                text += f"\nvar {module.module[1:-1]} = {module.module[1:-1]}();"
+            self._source = self._source.replace(f"import {module.module}", text)
 
     @property
     def includes(self) -> dict[str, Import]:

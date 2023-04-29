@@ -75,8 +75,12 @@ class Interpreter(VisitorProtocol, StmtProtocol):
             methods = inspect.getmembers(__import__(f"src.builtins.{file.stem}", fromlist=["*"]), inspect.isclass)
             for _, method in methods:
                 if issubclass(method, BuiltInCallable) and method is not BuiltInCallable:
+                    if getattr(method, "_setup", False):
+                        token = Token(KeywordTokenType.VAR, method._short_name, None, 0, 0)
+                        self._environment.define(token, method()())  # type: ignore
+                        continue
                     token = Token(KeywordTokenType.FUN, method._short_name, None, 0, 0)
-                    self._environment.define(token, method(method._short_name))  # type: ignore
+                    self._environment.define(token, method())  # type: ignore
 
     def error(self, token: "Token", message: str, /) -> str:
         """Raise a runtime error."""

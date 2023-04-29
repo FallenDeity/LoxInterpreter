@@ -67,7 +67,7 @@ class Replace(StringCallable):
         return 2
 
     def __call__(self, interpreter: "Interpreter", arguments: list[t.Any], /) -> str:
-        self.parent.fields = self.parent.fields.replace(arguments[0], arguments[1])
+        self.parent.fields = self.parent.fields.replace(str(arguments[0]), str(arguments[1]))
         return self.parent.fields
 
 
@@ -81,7 +81,7 @@ class Split(StringCallable):
         return 1
 
     def __call__(self, interpreter: "Interpreter", arguments: list[t.Any], /) -> LoxArray:
-        return LoxArray([LoxString(s) for s in self.parent.fields.split(arguments[0])])
+        return LoxArray([LoxString(s) for s in self.parent.fields.split(str(arguments[0]))])
 
 
 @dataclasses.dataclass
@@ -98,6 +98,19 @@ class Check(StringCallable):
         if check is None:
             raise PyLoxAttributeError(interpreter.error(self.token, f"String has no attribute {self.token.lexeme!r}."))
         return check()
+
+
+@dataclasses.dataclass
+class Contains(StringCallable):
+    parent: "LoxString"
+    token: "Token"
+
+    @property
+    def arity(self) -> int:
+        return 1
+
+    def __call__(self, interpreter: "Interpreter", arguments: list[t.Any], /) -> bool:
+        return str(arguments[0]) in str(self.parent.fields)
 
 
 class LoxString(LoxContainer):
@@ -120,10 +133,11 @@ class LoxString(LoxContainer):
         "istitle": Check,
         "isupper": Check,
         "isascii": Check,
+        "contains": Contains,
     }
 
     def __init__(self, fields: str, /) -> None:
-        self.fields = fields
+        self.fields = str(fields)
         self.parent = LoxString
 
     def __str__(self) -> str:
@@ -146,6 +160,14 @@ class LoxString(LoxContainer):
 
     def __getitem__(self, index: int, /) -> str:
         return self.fields[index]
+
+    def __hash__(self) -> int:
+        return hash(self.fields)
+
+    def __eq__(self, other: t.Any) -> bool:
+        if isinstance(other, LoxString):
+            return self.fields == other.fields
+        return False
 
     def get(self, name: "Token", /) -> t.Any:
         try:

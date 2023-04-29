@@ -4,6 +4,8 @@ import typing as t
 
 from src.exceptions import PyLoxTypeError
 from src.internals.array import LoxArray
+from src.internals.hash import LoxHash
+from src.internals.http import LoxRequest
 from src.internals.string import LoxString
 
 from . import BuiltInCallable
@@ -136,3 +138,42 @@ class Float(BuiltInCallable):
             return float(arguments[0])
         except TypeError:
             raise PyLoxTypeError("Argument must be a string or an array.")
+
+
+@dataclasses.dataclass
+class Type(BuiltInCallable):
+    _short_name = "type"
+
+    @property
+    def arity(self) -> int:
+        return 1
+
+    def __call__(self, interpreter: "Interpreter", arguments: list[t.Any], /) -> str:
+        return type(arguments[0]).__name__
+
+
+@dataclasses.dataclass
+class Request(BuiltInCallable):
+    _short_name = "requests"
+    _setup = True
+
+    @property
+    def arity(self) -> int:
+        return 0
+
+    def __call__(
+        self, interpreter: t.Optional["Interpreter"] = None, arguments: t.Optional[list[str]] = None, /
+    ) -> LoxRequest:
+        return LoxRequest()
+
+
+@dataclasses.dataclass
+class Hash(BuiltInCallable):
+    _short_name = "hash"
+
+    @property
+    def arity(self) -> int:
+        return 0
+
+    def __call__(self, interpreter: "Interpreter", arguments: list[t.Any], /) -> LoxHash:
+        return LoxHash()
