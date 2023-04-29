@@ -317,7 +317,7 @@ We detect a variable declaration by checking if the current token is of type `va
                 if not self._match(SimpleTokenType.COMMA):
                     break
         self._consume(SimpleTokenType.RIGHT_PAREN, "Expected ')' after parameters.")
-        self._consume(SimpleTokenType.LEFT_BRACE, f"Expected '{{' before {kind} body.")
+        self._consume(SimpleTokenType.LEFT_BRACE, "Expected '{' before" + f" {kind} body.")
         body = self._block()
         return Function(name, parameters, body)
 ```
