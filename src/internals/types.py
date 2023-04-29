@@ -1,7 +1,7 @@
 import dataclasses
 import typing as t
 
-from src.exceptions import PyLoxAttributeError, PyLoxIndexError
+from src.exceptions import PyLoxAttributeError, PyLoxIndexError, PyLoxTypeError
 
 from .callables import LoxCallable, LoxInstance
 
@@ -54,6 +54,52 @@ class GetContainer(LoxCallable):
 class LoxContainer(LoxInstance):
     def __len__(self) -> int:
         return len(self.fields)
+
+    def __getitem__(self, index: int, /) -> str:
+        return self.fields[index]
+
+    def __setitem__(self, index: int, value: t.Any, /) -> None:
+        self.fields[index] = value
+
+    def __gt__(self, other: t.Any) -> bool:
+        if isinstance(other, LoxContainer):
+            try:
+                return self.fields > other.fields  # type: ignore
+            except TypeError:
+                raise PyLoxTypeError(f"Cannot compare {self.__class__.__name__} and {other.__class__.__name__}.")
+        return False
+
+    def __ge__(self, other: t.Any) -> bool:
+        if isinstance(other, LoxContainer):
+            try:
+                self.fields >= other.fields  # type: ignore
+            except TypeError:
+                raise PyLoxTypeError(f"Cannot compare {self.__class__.__name__} and {other.__class__.__name__}.")
+        return False
+
+    def __lt__(self, other: t.Any) -> bool:
+        if isinstance(other, LoxContainer):
+            try:
+                self.fields < other.fields  # type: ignore
+            except TypeError:
+                raise PyLoxTypeError(f"Cannot compare {self.__class__.__name__} and {other.__class__.__name__}.")
+        return False
+
+    def __le__(self, other: t.Any) -> bool:
+        if isinstance(other, LoxContainer):
+            try:
+                self.fields <= other.fields  # type: ignore
+            except TypeError:
+                raise PyLoxTypeError(f"Cannot compare {self.__class__.__name__} and {other.__class__.__name__}.")
+        return False
+
+    def __bool__(self) -> bool:
+        return bool(self.fields)
+
+    def __eq__(self, other: t.Any) -> bool:
+        if isinstance(other, LoxContainer):
+            return self.fields == other.fields
+        return False
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}({self.fields})"

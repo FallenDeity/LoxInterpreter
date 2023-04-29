@@ -152,22 +152,11 @@ class LoxString(LoxContainer):
     def __float__(self) -> float:
         return float(self.fields)
 
-    def __bool__(self) -> bool:
-        return bool(self.fields)
-
-    def __len__(self) -> int:
-        return len(self.fields)
-
-    def __getitem__(self, index: int, /) -> str:
-        return self.fields[index]
+    def __mul__(self, other: int) -> "LoxString":
+        return LoxString(self.fields * other)
 
     def __hash__(self) -> int:
         return hash(self.fields)
-
-    def __eq__(self, other: t.Any) -> bool:
-        if isinstance(other, LoxString):
-            return self.fields == other.fields
-        return False
 
     def get(self, name: "Token", /) -> t.Any:
         try:

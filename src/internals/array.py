@@ -177,6 +177,35 @@ class Slice(ArrayCallable):
             raise PyLoxRuntimeError(interpreter.error(self.token, "Invalid slice."))
 
 
+@dataclasses.dataclass
+class Extend(ArrayCallable):
+    parent: "LoxArray"
+    token: "Token"
+
+    @property
+    def arity(self) -> int:
+        return 1
+
+    def __call__(self, interpreter: "Interpreter", arguments: list[t.Any], /) -> None:
+        try:
+            self.parent.fields.extend(arguments[0])
+        except TypeError:
+            raise PyLoxRuntimeError(interpreter.error(self.token, "Invalid iterable."))
+
+
+@dataclasses.dataclass
+class Copy(ArrayCallable):
+    parent: "LoxArray"
+    token: "Token"
+
+    @property
+    def arity(self) -> int:
+        return 0
+
+    def __call__(self, interpreter: "Interpreter", arguments: list[t.Any], /) -> "LoxArray":
+        return LoxArray(self.parent.fields.copy())
+
+
 class LoxArray(LoxContainer):
     parent: t.Type["LoxArray"]
     fields: list[t.Any]
@@ -191,11 +220,16 @@ class LoxArray(LoxContainer):
         "sort": Sort,
         "join": Join,
         "slice": Slice,
+        "extend": Extend,
+        "copy": Copy,
     }
 
     def __init__(self, fields: t.Optional[list[t.Any]] = None) -> None:
         self.parent = LoxArray
         self.fields = fields or []
+
+    def __mul__(self, other: int, /) -> "LoxArray":
+        return LoxArray(self.fields * other)
 
     def __str__(self) -> str:
         return f"[{', '.join(map(str, self.fields))}]"

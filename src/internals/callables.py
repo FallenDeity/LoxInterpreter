@@ -94,7 +94,7 @@ class LoxClass(LoxCallable):
 @dataclasses.dataclass
 class LoxInstance:
     parent: LoxClass
-    fields: t.Dict[str, t.Any] = dataclasses.field(default_factory=dict)
+    fields: t.Dict[t.Any, t.Any] = dataclasses.field(default_factory=dict)
 
     def get(self, name: Token, /) -> t.Any:
         if name.lexeme in self.fields:

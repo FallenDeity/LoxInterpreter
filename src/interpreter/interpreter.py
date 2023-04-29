@@ -107,11 +107,7 @@ class Interpreter(VisitorProtocol, StmtProtocol):
     @staticmethod
     def is_truthy(obj: t.Any) -> bool:
         """Check if an object is truthy."""
-        if obj is None:
-            return False
-        if isinstance(obj, bool):
-            return obj
-        return True
+        return bool(obj)
 
     def _numeric_validation(self, operator: "Token", *operands: t.Any) -> None:
         """Validate numeric operands."""
@@ -336,6 +332,8 @@ class Interpreter(VisitorProtocol, StmtProtocol):
                     return left + right
                 if isinstance(left, LoxString) and isinstance(right, LoxString):
                     return LoxString(str(left) + str(right))
+                if isinstance(left, LoxArray) and isinstance(right, LoxArray):
+                    return LoxArray(left.fields + right.fields)
                 raise PyLoxRuntimeError(self.error(expr.operator, "Operands must be two numbers or two strings."))
             case SimpleTokenType.SLASH:
                 self._numeric_validation(expr.operator, left, right)
@@ -350,6 +348,14 @@ class Interpreter(VisitorProtocol, StmtProtocol):
                 except ZeroDivisionError:
                     raise PyLoxRuntimeError(self.error(expr.operator, "Division by zero."))
             case SimpleTokenType.STAR:
+                if isinstance(left, LoxString) and isinstance(right, int):
+                    return LoxString(str(left) * right)
+                if isinstance(left, int) and isinstance(right, LoxString):
+                    return LoxString(str(right) * left)
+                if isinstance(left, LoxArray) and isinstance(right, int):
+                    return LoxArray(left.fields * right)
+                if isinstance(left, int) and isinstance(right, LoxArray):
+                    return LoxArray(left * right.fields)
                 self._numeric_validation(expr.operator, left, right)
                 return left * right
             case SimpleTokenType.MODULO:

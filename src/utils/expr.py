@@ -91,7 +91,7 @@ class Call(Expr):
 
     callee: Expr
     paren: "Token"
-    arguments: list[Expr]
+    arguments: t.Sequence[Expr]
 
     def accept(self, visitor: VisitorProtocol, /) -> t.Any:
         """Accept a visitor."""

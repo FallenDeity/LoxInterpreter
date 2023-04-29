@@ -18,7 +18,8 @@ class PyLox:
         self.logger = Logger(name="PyLox")
         self.interpreter = Interpreter(self, self.logger)
         self._source = self._read_file(self._file_path) if self._file_path else ""
-        self._source = PreProcessor(self._source).source
+        process = PreProcessor(self._source)
+        self._source = process.source
         self.lexer = Lexer(self._source, self.logger)
 
     @staticmethod

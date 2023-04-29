@@ -7,4 +7,121 @@ class generics {
         }
         return buffer;
     }
+
+    filter (callable, arr) {
+        var length_ = len(arr);
+        var buffer = array();
+        for (var i = 0; i < length_; i = i + 1) {
+            if (callable(arr.get(i))) {
+                buffer.append(arr.get(i));
+            }
+        }
+        return buffer;
+    }
+
+    reduce (callable, arr, initial) {
+        var length_ = len(arr);
+        var result = initial;
+        for (var i = 0; i < length_; i = i + 1) {
+            result = callable(result, arr.get(i));
+        }
+        return result;
+    }
+
+    sum (arr) {
+        var length_ = len(arr);
+        var result = 0;
+        for (var i = 0; i < length_; i = i + 1) {
+            result = result + arr.get(i);
+        }
+        return result;
+    }
+
+    max (arr) {
+        var length_ = len(arr);
+        var result = arr.get(0);
+        for (var i = 1; i < length_; i = i + 1) {
+            if (arr.get(i) > result) {
+                result = arr.get(i);
+            }
+        }
+        return result;
+    }
+
+    min (arr) {
+        var length_ = len(arr);
+        var result = arr.get(0);
+        for (var i = 1; i < length_; i = i + 1) {
+            if (arr.get(i) < result) {
+                result = arr.get(i);
+            }
+        }
+        return result;
+    }
+
+    all (arr) {
+        var length_ = len(arr);
+        for (var i = 0; i < length_; i = i + 1) {
+            if (!arr.get(i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    any (arr) {
+        var length_ = len(arr);
+        for (var i = 0; i < length_; i = i + 1) {
+            if (arr.get(i)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    join (arr, sep) {
+        var length_ = len(arr);
+        var result = "";
+        for (var i = 0; i < length_; i = i + 1) {
+            if (i > 0) {
+                result = result + sep;
+            }
+            result = result + arr.get(i);
+        }
+        return result;
+    }
+
+    sort (arr) {
+        var length_ = len(arr);
+        for (var i = 0; i < length_; i = i + 1) {
+            for (var j = i + 1; j < length_; j = j + 1) {
+                if (arr.get(i) > arr.get(j)) {
+                    var tmp = arr.get(i);
+                    arr.set(i, arr.get(j));
+                    arr.set(j, tmp);
+                }
+            }
+        }
+    }
+
+    sorted (arr) {
+        var result = arr.copy();
+        this.sort(result);
+        return result;
+    }
+
+    reverse (arr) {
+        var length_ = len(arr);
+        for (var i = 0; i < length_ / 2; i = i + 1) {
+            var tmp = arr.get(i);
+            arr.set(i, arr.get(length_ - i - 1));
+            arr.set(length_ - i - 1, tmp);
+        }
+    }
+
+    reversed (arr) {
+        var result = arr.copy();
+        this.reverse(result);
+        return result;
+    }
 }

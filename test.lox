@@ -1,7 +1,8 @@
-var d = hash();
+import <random>
+
+var arr = array();
 for (var i = 0; i < 10; i = i + 1) {
-    d.set(str(i), i);
+    arr.append(i);
 }
-print d;
-var z = d.get("0");
-print z;
+random.shuffle(arr);
+print arr;

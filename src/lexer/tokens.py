@@ -54,6 +54,7 @@ class ComplexTokenType(TokenType):
     LESS = "<"
     LESS_EQUAL = "<="
     BACKSLASH = "\\"
+    BANG = "!"
 
 
 class LiteralTokenType(TokenType):

@@ -1,0 +1,44 @@
+class random {
+    init() {
+        this.seed = int(clock());
+        this.a = 594156893;
+        this.m = 2147483648;
+        this.c = 1597;
+    }
+
+    setSeed(seed) {
+        this.seed = seed;
+    }
+
+    nextInt() {
+        this.seed = (this.a * this.seed + this.c) % this.m;
+        return this.seed;
+    }
+
+    randint(min, max) {
+        return floor((max - min) * (this.nextInt() / (this.m - 1)) + min);
+    }
+
+    choice(arr) {
+        return this.randint(0, len(arr) - 1);
+    }
+
+    randrange(start, stop, step) {
+        var pick = this.randint(start, stop - 1);
+        var arr = array();
+        arr.append(pick - (pick % step));
+        arr.append(pick + (step - (pick % step)));
+        return arr.get(this.choice(arr));
+    }
+
+    shuffle(arr) {
+        var i = len(arr);
+        while (i > 0) {
+            var j = this.randint(0, i - 1);
+            var temp = arr.get(i - 1);
+            arr.set(i - 1, arr.get(j));
+            arr.set(j, temp);
+            i = i - 1;
+        }
+    }
+}

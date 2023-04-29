@@ -488,7 +488,7 @@ class Parser:
                 if not self._match(SimpleTokenType.COMMA):
                     break
         paren = self._consume(SimpleTokenType.RIGHT_PAREN, "Expected ')' after arguments.")
-        return Call(callee, paren, arguments)
+        return Call(callee, paren, tuple(arguments))
 
     def _lambda(self) -> Expr:
         """
@@ -512,6 +512,8 @@ class Parser:
         Parse a primary expression.
         :return: The parsed data
         """
+        if self._match(KeywordTokenType.LAMBDA):
+            return self._lambda()
         if self._match(KeywordTokenType.FALSE):
             return Literal(False)
         if self._match(KeywordTokenType.TRUE):
@@ -520,8 +522,6 @@ class Parser:
             return Literal(None)
         if self._match(LiteralTokenType.NUMBER, LiteralTokenType.STRING):
             return Literal(self._previous().literal)
-        if self._match(KeywordTokenType.LAMBDA):
-            return self._lambda()
         if self._match(KeywordTokenType.SUPER):
             keyword = self._previous()
             self._consume(SimpleTokenType.DOT, "Expected '.' after 'super'.")

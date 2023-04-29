@@ -111,10 +111,10 @@ class Lexer:
             return
         elif char == str(SimpleTokenType.SLASH):
             self._read_comment()
-        elif char in SimpleTokenType.as_dict().values():
-            self._add_token(SimpleTokenType(char))
         elif char in ComplexTokenType.as_dict().values():
             self._read_complex(char)
+        elif char in SimpleTokenType.as_dict().values():
+            self._add_token(SimpleTokenType(char))
         elif char == "\n":
             self._cursor.bump_line()
         elif char in (str(LiteralTokenType.SINGLE_QUOTE), str(LiteralTokenType.DOUBLE_QUOTE)):
