@@ -84,9 +84,9 @@ class Interpreter(VisitorProtocol, StmtProtocol):
 
     def error(self, token: "Token", message: str, /) -> str:
         """Raise a runtime error."""
-        line = self._lox.lexer._source.splitlines()[token.line - 1]
+        line = self._lox._source.splitlines()[token.line - 1]
         error_ = f"\n{line}\n{'~' * token.column}^\n{message}"
-        return f"RuntimeError at line {token.line}:{token.column}{error_}"
+        return f"RuntimeError at line {token.line  - self._lox._process.lines}:{token.column}{error_}"
 
     @staticmethod
     def is_equal(left: Equals, right: Equals, /) -> bool:
@@ -220,8 +220,8 @@ class Interpreter(VisitorProtocol, StmtProtocol):
 
     def visit_print_stmt(self, stmt: "Print") -> None:
         """Visit a print statement."""
-        value: t.Any = self._evaluate(stmt.expression)
-        print(self.stringify(value))
+        value = self.stringify(self._evaluate(stmt.expression))
+        print(bytes(value, "utf-8").decode("unicode_escape"))
 
     def visit_return_stmt(self, stmt: "Return") -> None:
         """Visit a return statement."""
@@ -398,9 +398,14 @@ class Interpreter(VisitorProtocol, StmtProtocol):
         try:
             return callee(self, arguments)
         except Exception as e:
-            self._logger.error(f"Error while calling function {expr.paren.line}:{expr.paren.column}: \n{e}")
+            self._logger.error(
+                f"Error calling function {expr.paren.line  - self._lox._process.lines}:{expr.paren.column}:\n{e}"
+            )
             raise PyLoxRuntimeError(
-                self.error(expr.paren, f"Error while calling function {expr.paren.line}:{expr.paren.column}: \n{e}")
+                self.error(
+                    expr.paren,
+                    f"Error calling function {expr.paren.line - self._lox._process.lines}:{expr.paren.column}:\n{e}",
+                )
             )
 
     def visit_get_expr(self, expr: "Get") -> t.Any:

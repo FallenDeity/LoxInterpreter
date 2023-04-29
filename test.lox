@@ -1,8 +1,5 @@
-import <random>
-
-var arr = array();
-for (var i = 0; i < 10; i = i + 1) {
-    arr.append(i);
+class Foo {
 }
-random.shuffle(arr);
-print arr;
+
+class Bar < Foo {
+}

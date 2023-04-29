@@ -18,8 +18,8 @@ class PyLox:
         self.logger = Logger(name="PyLox")
         self.interpreter = Interpreter(self, self.logger)
         self._source = self._read_file(self._file_path) if self._file_path else ""
-        process = PreProcessor(self._source)
-        self._source = process.source
+        self._process = PreProcessor(self._source)
+        self._source = self._process.source
         self.lexer = Lexer(self._source, self.logger)
 
     @staticmethod
@@ -36,25 +36,29 @@ class PyLox:
                 self.logger.debug("Exiting PyLox...")
                 raise PyLoxKeyboardInterrupt
             else:
-                self.logger.info("Running PyLox...")
-                self.lexer.source = f"{source}\n"
                 try:
+                    self.logger.info("Running PyLox...")
+                    self._process = PreProcessor(source)
+                    self._source = self._process.source
+                    self.lexer = Lexer(self._source, self.logger)
                     tokens = self.lexer.scan_tokens()
-                    parser = Parser(tokens, self.logger, self._source)
+                    parser = Parser(self, tokens, self.logger, self._source)
                     statements = parser.parse()
+                    print(statements)
                     if parser._has_error:
                         continue
                     resolver = Resolver(self.interpreter)
                     resolver._resolve(statements)
                     self.interpreter.interpret(statements)
                     self.logger.info("Finished running PyLox.")
-                except PyLoxException:
+                except PyLoxException as e:
+                    self.logger.error(e)
                     continue
 
     def run(self) -> None:
         self.logger.info("Running PyLox...")
         tokens = self.lexer.scan_tokens()
-        parser = Parser(tokens, self.logger, self._source)
+        parser = Parser(self, tokens, self.logger, self._source)
         statements = parser.parse()
         if parser._has_error:
             return

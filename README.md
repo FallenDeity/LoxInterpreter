@@ -18,6 +18,7 @@
     * [JIT compilers](#jit-compilers)
   * [Compiler vs Interpreter](#compiler-vs-interpreter)
   * [References](#references)
+  * [Progress](#progress)
 
 # Design of Programming Languages and Interpreters
 
@@ -201,6 +202,10 @@ A JIT compiler is a compiler that generates target code at runtime. This is less
 
 - [Crafting Interpreters](https://craftinginterpreters.com/)
 - [WikiBooks](https://en.wikibooks.org/wiki/Compiler_Construction)
+
+## Progress
+
+You can check out the progress of the project [here](./docs/tasks.html).
 
 <html lang="en">
     <style>

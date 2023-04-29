@@ -25,6 +25,7 @@ class PreProcessor:
     def __init__(self, source: str) -> None:
         self._includes: dict[str, Import] = {}
         self._source = source
+        self.lines = 0
         self._resolve_imports()
 
     def _resolve_imports(self) -> None:
@@ -45,12 +46,14 @@ class PreProcessor:
                 self._includes[path.as_posix()] = Import(path, n, match.start(), match.end(), module)
         for module in self._includes.values():
             text = module.path.read_text()
+            self.lines += text.count("\n")
             if (
                 module.module.startswith("<")
                 and ("init(" not in text or "init()" in text)
                 and f"class {module.module[1:-1]}" in text
             ):
                 text += f"\nvar {module.module[1:-1]} = {module.module[1:-1]}();"
+                self.lines += 1
             self._source = self._source.replace(f"import {module.module}", text)
 
     @property

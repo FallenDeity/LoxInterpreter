@@ -34,6 +34,7 @@ from src.utils.expr import (
 )
 
 if t.TYPE_CHECKING:
+    from src.interpreter import PyLox
     from src.lexer.tokens import Token, TokenType
     from src.logger import Logger
 
@@ -42,13 +43,14 @@ __all__: tuple[str, ...] = ("Parser",)
 
 
 class Parser:
-    def __init__(self, tokens: list["Token"], logger: "Logger", source: str, debug: bool = True) -> None:
+    def __init__(self, lox: "PyLox", tokens: list["Token"], logger: "Logger", source: str, debug: bool = True) -> None:
         self._tokens = tokens
         self._current = 0
         self._logger = logger
         self._debug = debug
         self._source = source
         self._has_error = False
+        self._lox = lox
 
     def parse(self) -> list["Stmt"]:
         """Parse the tokens."""
@@ -101,7 +103,10 @@ class Parser:
         token = self._previous()
         if self._check(token_type):
             return self._advance()
-        error = f"Expected {str(token_type)} but got {str(token.token_type)} in {token.line}:{token.column}"
+        error = (
+            f"Expected {str(token_type)} but got {str(token.token_type)} "
+            f"in {token.line - self._lox._process.lines}:{token.column}"
+        )
         self._error(token, error, message)
 
     def _synchronize(self) -> None:
@@ -430,7 +435,9 @@ class Parser:
         :return: The parsed data
         """
         expr = self._factor()
-        while self._match(SimpleTokenType.MINUS, SimpleTokenType.PLUS, ComplexTokenType.BACKSLASH):
+        while self._match(
+            SimpleTokenType.MINUS, SimpleTokenType.PLUS
+        ):  # if there is an term operator parse the right hand side
             operator, right = self._previous(), self._factor()
             expr = Binary(expr, operator, right)
         return expr
@@ -441,7 +448,13 @@ class Parser:
         :return: The parsed data
         """
         expr = self._unary()
-        while self._match(SimpleTokenType.SLASH, SimpleTokenType.STAR, SimpleTokenType.MODULO, SimpleTokenType.CARAT):
+        while self._match(
+            SimpleTokenType.CARAT,
+            SimpleTokenType.SLASH,
+            ComplexTokenType.BACKSLASH,
+            SimpleTokenType.STAR,
+            SimpleTokenType.MODULO,
+        ):
             operator, right = self._previous(), self._unary()
             expr = Binary(expr, operator, right)
         return expr
