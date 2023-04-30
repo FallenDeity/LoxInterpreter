@@ -1,33 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-   <head>
-	 <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.min.js"></script>
-    </head>
-	 
-<body>
- <pre><code class="language-mermaid">graph LR
-A--&gt;B
-</code></pre>
-
-<div class="mermaid">graph LR
-A--&gt;B
-</div>
-	
-</body>
-<script>
-var config = {
-    startOnLoad:true,
-    theme: 'forest',
-    flowchart:{
-            useMaxWidth:false,
-            htmlLabels:true
-        }
-};
-mermaid.initialize(config);
-window.mermaid.init(undefined, document.querySelectorAll('.language-mermaid'));
-</script>
-
-</html>
 * [Environments](#environments)
   * [Defining variables](#defining-variables)
   * [Getting variables](#getting-variables)
@@ -89,20 +59,33 @@ This part is a bit tricky which means we need to handle cases if the variable is
 Now the first case is easy to manage as we can just check if the variable is in the `values` dictionary. If it is, we can just return the value else we need to check if the variable is defined in the enclosing environment. If it is, we can just return the value from the enclosing environment. This is where `enclosing` field comes in handy. If the variable is not defined in the enclosing environment, we can raise an error.
 So the process recursively checks if there is still an enclosing environment and if the variable is defined in the enclosing environment and calls upon itself till it finds the variable or there is no enclosing environment left.
 
-```mermaid
-graph LR
-
+<html lang="en">
+   <head>
+	 <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.min.js"></script>
+     <title>Getting variables</title>
+   </head>
+<body>
+<div class="mermaid">graph LR
 A[get variable] --> B{is variable in current environment?}
 B --> |yes| C[return value]
 B --> |no| D{is there an enclosing environment?}
 D --> |yes| A
 D --> |no| E[raise error]
-style B fill:darkviolet,stroke:#333,stroke-width:4px
-style A fill:darkblue,stroke:#333,stroke-width:4px
-style C fill:darkgreen,stroke:#333,stroke-width:4px
-style D fill:darkviolet,stroke:#333,stroke-width:4px
-style E fill:darkred,stroke:#333,stroke-width:4px
-```
+</div>
+</body>
+<script>
+ const config = {
+     startOnLoad:true,
+     theme: 'forest',
+     flowchart:{
+             useMaxWidth:false,
+             htmlLabels:true
+         }
+ };
+mermaid.initialize(config);
+window.mermaid.init(undefined, document.querySelectorAll('.language-mermaid'));
+</script>
+</html>
 
 Now what happens if we try to get a variable that is not defined at all?
 
@@ -142,20 +125,33 @@ var a = "Oops!";
 
 Assigning variables is similar to getting variables. We first check if the variable is defined in the current environment. If it is, we just update the value of the variable. If it is not, we check if the variable is defined in the enclosing environment. If it is, we update the value of the variable in the enclosing environment. If it is not, we raise an error.
 
-```mermaid
-graph LR
-
+<html lang="en">
+   <head>
+	 <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.min.js"></script>
+     <title>Getting variables</title>
+   </head>
+<body>
+<div class="mermaid">graph LR
 A[assign variable] --> B{is variable in current environment?}
 B --> |yes| C[update value]
 B --> |no| D{is there an enclosing environment?}
 D --> |yes| A
 D --> |no| E[raise error]
-style B fill:darkviolet,stroke:#333,stroke-width:4px
-style A fill:darkblue,stroke:#333,stroke-width:4px
-style C fill:darkgreen,stroke:#333,stroke-width:4px
-style D fill:darkviolet,stroke:#333,stroke-width:4px
-style E fill:darkred,stroke:#333,stroke-width:4px
-```
+</div>
+</body>
+<script>
+ const config = {
+     startOnLoad:true,
+     theme: 'forest',
+     flowchart:{
+             useMaxWidth:false,
+             htmlLabels:true
+         }
+ };
+mermaid.initialize(config);
+window.mermaid.init(undefined, document.querySelectorAll('.language-mermaid'));
+</script>
+</html>
 
 ## Scoping
 
@@ -166,11 +162,29 @@ Scopes ensure the correct value is used based on its context.
 
 Scopes and environments are closely related. Each scope has its own environment. When we define a variable in a scope, we define it in the environment of that scope. When we get a variable, we get it from the environment of that scope.
 
-```mermaid
-graph LR
-
+<html lang="en">
+   <head>
+	 <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.min.js"></script>
+     <title>Getting variables</title>
+   </head>
+<body>
+<div class="mermaid">graph LR
 A[Scope] --> B[Environment]
-```
+</div>
+</body>
+<script>
+ const config = {
+     startOnLoad:true,
+     theme: 'forest',
+     flowchart:{
+             useMaxWidth:false,
+             htmlLabels:true
+         }
+ };
+mermaid.initialize(config);
+window.mermaid.init(undefined, document.querySelectorAll('.language-mermaid'));
+</script>
+</html>
 
 ### Cases to consider
 
