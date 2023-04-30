@@ -1,3 +1,11 @@
+* [Environments](#environments)
+  * [Defining variables](#defining-variables)
+  * [Getting variables](#getting-variables)
+  * [Assigning Variables](#assigning-variables)
+  * [Scoping](#scoping)
+    * [Cases to consider](#cases-to-consider)
+  * [Scope Resolution](#scope-resolution)
+
 # Environments
 
 Environments are similar to sort of dictionary that maps keys to values. In our case environments will be used to map variable amd other declarations to their values.
@@ -51,7 +59,7 @@ This part is a bit tricky which means we need to handle cases if the variable is
 Now the first case is easy to manage as we can just check if the variable is in the `values` dictionary. If it is, we can just return the value else we need to check if the variable is defined in the enclosing environment. If it is, we can just return the value from the enclosing environment. This is where `enclosing` field comes in handy. If the variable is not defined in the enclosing environment, we can raise an error.
 So the process recursively checks if there is still an enclosing environment and if the variable is defined in the enclosing environment and calls upon itself till it finds the variable or there is no enclosing environment left.
 
-```mermaid
+```mermaid!
 graph LR
 
 A[get variable] --> B{is variable in current environment?}
@@ -104,7 +112,7 @@ var a = "Oops!";
 
 Assigning variables is similar to getting variables. We first check if the variable is defined in the current environment. If it is, we just update the value of the variable. If it is not, we check if the variable is defined in the enclosing environment. If it is, we update the value of the variable in the enclosing environment. If it is not, we raise an error.
 
-```mermaid
+```mermaid!
 graph LR
 
 A[assign variable] --> B{is variable in current environment?}
@@ -128,7 +136,7 @@ Scopes ensure the correct value is used based on its context.
 
 Scopes and environments are closely related. Each scope has its own environment. When we define a variable in a scope, we define it in the environment of that scope. When we get a variable, we get it from the environment of that scope.
 
-```mermaid
+```mermaid!
 graph LR
 
 A[Scope] --> B[Environment]
