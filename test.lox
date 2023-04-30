@@ -1,9 +1,7 @@
-fun foo() {
-    return bar();
+class Foo {
+    init () {
+        return 1;
+    }
 }
 
-fun bar() {
-    return 10;
-}
-
-print foo();
+var foo = Foo();

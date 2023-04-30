@@ -2,7 +2,6 @@ import dataclasses
 import typing as t
 
 from src.exceptions import PyLoxAttributeError
-from src.utils.expr import Literal
 
 from .callables import LoxCallable
 from .types import LoxContainer
@@ -40,7 +39,7 @@ class Get(HashCallable):
         return 1
 
     def __call__(self, interpreter: "Interpreter", arguments: list[t.Any], /) -> t.Any:
-        return self.parent.fields.get(arguments[0], Literal(None))
+        return self.parent.fields.get(arguments[0]) or self.parent.fields.get(str(arguments[0]))
 
 
 @dataclasses.dataclass
@@ -53,8 +52,13 @@ class Set(HashCallable):
         return 2
 
     def __call__(self, interpreter: "Interpreter", arguments: list[t.Any], /) -> t.Any:
-        self.parent.fields[arguments[0]] = arguments[1]
-        return Literal(None)
+        if arguments[0] in self.parent.fields:
+            self.parent.fields[arguments[0]] = arguments[1]
+            return arguments[1]
+        elif str(arguments[0]) in self.parent.fields:
+            self.parent.fields[str(arguments[0])] = arguments[1]
+            return arguments[1]
+        raise PyLoxAttributeError(f"Undefined property '{arguments[0]}'.")
 
 
 class LoxHash(LoxContainer):
@@ -75,8 +79,20 @@ class LoxHash(LoxContainer):
     def __len__(self) -> int:
         return len(self.fields)
 
+    def __getitem__(self, key: t.Any, /) -> t.Any:
+        return self.fields[key]
+
+    def __setitem__(self, key: t.Any, value: t.Any, /) -> None:
+        self.fields[key] = value
+
     def get(self, name: "Token", /) -> t.Any:
         try:
             return self.methods[name.lexeme](self, name)  # type: ignore
         except KeyError:
             raise PyLoxAttributeError(f"Undefined property '{name.lexeme}'.")
+
+    @classmethod
+    def from_dict(cls, fields: dict[t.Any, t.Any], /) -> "LoxHash":
+        instance = cls()
+        instance.fields = fields
+        return instance

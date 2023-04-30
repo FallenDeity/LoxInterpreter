@@ -4,6 +4,7 @@ import typing as t
 import requests
 
 from src.exceptions import PyLoxAttributeError, PyLoxRuntimeError
+from src.internals.hash import LoxHash
 
 from .callables import LoxCallable
 from .types import LoxContainer
@@ -32,20 +33,6 @@ class RequestCallable(LoxCallable):
         raise NotImplementedError
 
 
-class LoxRequestModel(LoxContainer):
-    parent: t.Type["LoxRequestModel"]
-
-    def __init__(self, fields: requests.models.Response, /) -> None:
-        self.parent = LoxRequestModel
-        try:
-            self.fields = fields.json()
-        except ValueError:
-            self.fields = {}
-        for key in dir(fields):
-            if not key.startswith("_") and not callable(getattr(fields, key)):
-                self.fields[key] = getattr(fields, key)
-
-
 @dataclasses.dataclass
 class Get(RequestCallable):
     parent: "LoxRequest"
@@ -55,9 +42,20 @@ class Get(RequestCallable):
     def arity(self) -> int:
         return 1
 
-    def __call__(self, interpreter: "Interpreter", arguments: list[t.Any], /) -> LoxRequestModel:
+    @staticmethod
+    def _make_model(fields: requests.models.Response, /) -> LoxHash:
         try:
-            return LoxRequestModel(requests.get(str(arguments[0])))
+            return LoxHash.from_dict(fields.json())
+        except ValueError:
+            data = LoxHash()
+            for key in dir(fields):
+                if not key.startswith("_") and not callable(getattr(fields, key)):
+                    data[key] = getattr(fields, key)
+            return data
+
+    def __call__(self, interpreter: "Interpreter", arguments: list[t.Any], /) -> LoxHash:
+        try:
+            return self._make_model(requests.get(arguments[0]))
         except requests.exceptions.RequestException as e:
             raise PyLoxRuntimeError(interpreter.error(self.token, f"Request failed: {e}"))
 

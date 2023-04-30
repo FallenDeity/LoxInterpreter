@@ -6,6 +6,7 @@ from src.builtins import BuiltInCallable
 from src.exceptions import PyLoxBreakError, PyLoxContinueError, PyLoxReturnError, PyLoxRuntimeError, PyLoxTypeError
 from src.internals.array import LoxArray
 from src.internals.callables import LoxCallable, LoxClass, LoxFunction, LoxInstance
+from src.internals.hash import LoxHash
 from src.internals.string import LoxString
 from src.lexer.tokens import ComplexTokenType, KeywordTokenType, SimpleTokenType, Token
 from src.utils.environment import Environment
@@ -132,6 +133,8 @@ class Interpreter(VisitorProtocol, StmtProtocol):
             return LoxString(value)
         elif isinstance(value, list):
             return LoxArray(value)
+        elif isinstance(value, dict):
+            return LoxHash.from_dict(value)
         return value
 
     def _evaluate(self, expression: t.Union["Expr", "Stmt"]) -> t.Any:
