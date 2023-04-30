@@ -85,7 +85,7 @@ class Interpreter(VisitorProtocol, StmtProtocol):
     def error(self, token: "Token", message: str, /) -> str:
         """Raise a runtime error."""
         line = self._lox._source.splitlines()[token.line - 1]
-        error_ = f"\n{line}\n{'~' * token.column}^\n{message}"
+        error_ = f"\n{line}\n{'~' * token.column}^\n{str(message)}"
         return f"RuntimeError at line {token.line  - self._lox._process.lines}:{token.column}{error_}"
 
     @staticmethod
@@ -427,4 +427,4 @@ class Interpreter(VisitorProtocol, StmtProtocol):
 
     def visit_throw_stmt(self, stmt: "Throw") -> t.Any:
         """Visit a throw statement."""
-        raise PyLoxRuntimeError(self.error(stmt.keyword, self._evaluate(stmt.value)))
+        raise PyLoxRuntimeError(self.error(stmt.keyword, t.cast(str, LoxString(self._evaluate(stmt.value)))))

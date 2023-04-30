@@ -82,6 +82,7 @@ class Resolver(StmtProtocol, VisitorProtocol):
 
     Hence, resolver creates a new scope for each block, function, and class.
     """
+
     def __init__(self, interpreter: "Interpreter") -> None:
         self._interpreter = interpreter
         self.scopes: list[dict[str, bool]] = []

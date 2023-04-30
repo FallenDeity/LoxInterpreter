@@ -5,3 +5,7 @@ github_username: FallenDeity
 plugins:
   - jekyll-feed
   - jekyll-remote-theme
+  - jekyll-sitemap
+  - jekyll-seo-tag
+  - jekyll-paginate
+  - jekyll-spaceship

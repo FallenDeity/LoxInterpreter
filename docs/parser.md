@@ -659,5 +659,5 @@ Hooraay! We have successfully made a parser. Give yourself a pat on the back. Yo
         }
     </style>
     <a class="btn-blue" href="scanner.html" style="float: left;">Previous: Language</a>
-    <a class="btn-blue" href="resolver.html" style="float: right;">Next: Parser</a>
+    <a class="btn-blue" href="environment.html" style="float: right;">Next: Environment</a>
 </html>

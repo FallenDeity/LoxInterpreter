@@ -26,7 +26,7 @@ class PyLox:
     def _read_file(path: pathlib.Path) -> str:
         """Read the source file."""
         with open(path, "r") as file:
-            return file.read()
+            return file.read().strip()
 
     def run_prompt(self) -> None:
         while True:
