@@ -289,7 +289,7 @@ class Parser:
             body = Block([body, Expression(increment)])
         if condition is None:
             condition = Literal(True)
-        body = While(condition, body)
+        body = While(condition, body, for_transformed=True)
         if initializer is not None:
             body = Block([initializer, body])
         return body

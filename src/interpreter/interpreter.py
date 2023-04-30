@@ -247,10 +247,10 @@ class Interpreter(VisitorProtocol, StmtProtocol):
                 try:
                     self._evaluate(stmt.body)
                 except PyLoxContinueError:
-                    if isinstance(stmt.body, Block):
+                    if stmt.for_transformed and isinstance(stmt.body, Block):
                         self._execute_block([stmt.body.statements[-1]], Environment(self._environment))
                         continue
-                    raise PyLoxRuntimeError("Continue must be inside a loop.")
+                    continue
         except PyLoxRuntimeError:
             return
 

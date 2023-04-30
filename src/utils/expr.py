@@ -366,6 +366,7 @@ class While(Stmt):
 
     condition: Expr
     body: Stmt
+    for_transformed: bool = False
 
     def accept(self, visitor: StmtProtocol, /) -> t.Any:
         """Accept a visitor."""

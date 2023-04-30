@@ -51,13 +51,7 @@ class Lexer:
             self._cursor.advance()
         value = self._cursor.source[self._cursor.start : self._cursor.current]
         _ids = [i.lexeme for i in self._tokens if i.token_type == LiteralTokenType.IDENTIFIER]
-        if self._cursor.column - len(value) == 1 and value not in (
-            *KeywordTokenType.as_dict().values(),
-            *_ids,
-        ):
-            self._logger.error(self._cursor.error_highlight(f"Invalid identifier '{value}'."))
-            raise PyLoxSyntaxError(self._cursor.error_highlight(f"Invalid identifier '{value}'."))
-        elif value in KeywordTokenType.as_dict().values():
+        if value in KeywordTokenType.as_dict().values():
             self._add_token(KeywordTokenType(value))
         else:
             self._add_token(LiteralTokenType.IDENTIFIER, value)
@@ -73,9 +67,6 @@ class Lexer:
             while self._cursor.peek().isdigit():
                 self._cursor.advance()
         value = self._cursor.source[self._cursor.start : self._cursor.current]
-        if self._cursor.column - len(value) == 1 and self._cursor.peek().isalpha() or self._cursor.peek() == "_":
-            self._logger.error(self._cursor.error_highlight(f"Invalid number '{value}'."))
-            raise PyLoxSyntaxError(self._cursor.error_highlight(f"Invalid number '{value}'."))
         self._add_token(LiteralTokenType.NUMBER, float(value) if is_float else int(value))
 
     def _read_comment(self) -> None:
