@@ -58,7 +58,12 @@ class Set(HashCallable):
         elif str(arguments[0]) in self.parent.fields:
             self.parent.fields[str(arguments[0])] = arguments[1]
             return arguments[1]
-        raise PyLoxAttributeError(f"Undefined property '{arguments[0]}'.")
+        else:
+            try:
+                self.parent.fields[arguments[0]] = arguments[1]
+                return arguments[1]
+            except TypeError:
+                raise PyLoxAttributeError(f"Undefined property '{arguments[0]}'.")
 
 
 class LoxHash(LoxContainer):

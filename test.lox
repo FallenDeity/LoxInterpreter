@@ -1,62 +1,18 @@
-class Node {
-    init (value) {
-        this.value = value;
-        this.next = nil;
-    }
+var cache = hash();
+
+fun fib(n) {
+  if (n < 2) {
+      return n;
+  }
+  if (cache.get(n)) {
+      return cache.get(n);
+  }
+  var res = fib(n - 1) + fib(n - 2);
+  cache.set(n, res);
+  return res;
 }
 
-
-class List {
-    init() {
-        this.head = nil;
-        this.tail = nil;
-    }
-
-    add(value) {
-        var node = Node(value);
-        if (!this.head) {
-            this.head = node;
-            this.tail = node;
-        } else {
-            this.tail.next = node;
-            this.tail = node;
-        }
-    }
-
-    remove(value) {
-        var node = this.head;
-        var prev = nil;
-        while (node) {
-            if (node.value == value) {
-                if (!prev) {
-                    this.head = node.next;
-                } else {
-                    prev.next = node.next;
-                }
-                return;
-            }
-            prev = node;
-            node = node.next;
-        }
-    }
-
-    write() {
-        var node = this.head;
-        while (node) {
-            print node.value;
-            node = node.next;
-        }
-    }
-}
-
-
-var list = List();
-for (var i = 0; i < 10; i = i + 1) {
-    list.add(i);
-}
-for (var i = 0; i < 10; i = i + 1) {
-    if (i % 2 == 0) {
-        list.remove(i);
-    }
-}
-list.write();
+var before = clock();
+print fib(30);
+var after = clock();
+print after - before;
