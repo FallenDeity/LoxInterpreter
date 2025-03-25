@@ -234,6 +234,14 @@ class LoxArray(LoxContainer):
     def __str__(self) -> str:
         return f"[{', '.join(map(str, self.fields))}]"
 
+    def set(self, name: "Token", value: t.Any, /) -> None:
+        try:
+            self.fields[int(name.lexeme)] = value
+        except ValueError:
+            raise PyLoxAttributeError(f"Array has no attribute '{name.lexeme}'.")
+        except IndexError:
+            raise PyLoxIndexError("Index out of range.")
+
     def get(self, name: "Token", /) -> t.Any:
         try:
             return super().get(name)
