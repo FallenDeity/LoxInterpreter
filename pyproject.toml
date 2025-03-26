@@ -4,6 +4,8 @@ version = "0.1.0"
 description = ""
 authors = ["FallenDeity <61227305+FallenDeity@users.noreply.github.com>"]
 readme = "README.md"
+package-mode = false
+license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.11"
